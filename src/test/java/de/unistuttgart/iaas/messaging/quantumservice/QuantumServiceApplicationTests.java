@@ -12,7 +12,7 @@ class QuantumServiceApplicationTests {
 
     @Test
     void testExec() throws IOException {
-        String[] command = new String[]{"python", "actions/qiskittest.py", "agrar"};
+        String[] command = new String[]{"python", "actions/TestQuantumScript.py", "agrar"};
         Process p = Runtime.getRuntime().exec(command);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
