@@ -1,15 +1,19 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.dto;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import lombok.Data;
 
 @Data
@@ -26,4 +30,7 @@ public class EventDto {
     private EventType type;
 
     private Map<String, Integer> additionalProperties = new HashMap<>();
+
+    @JsonIgnore
+    private Set<QuantumApplication> quantumApplications = new HashSet<>();
 }

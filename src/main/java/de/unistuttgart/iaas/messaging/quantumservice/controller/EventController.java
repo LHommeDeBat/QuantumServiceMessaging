@@ -1,7 +1,9 @@
 package de.unistuttgart.iaas.messaging.quantumservice.controller;
 
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventLinkAssembler;
+import de.unistuttgart.iaas.messaging.quantumservice.hateoas.QuantumApplicationLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.QuantumApplicationDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
 import de.unistuttgart.iaas.messaging.quantumservice.service.EventService;
 import de.unistuttgart.iaas.messaging.quantumservice.utils.ModelMapperUtils;
@@ -27,6 +29,7 @@ public class EventController {
 
     private final EventService service;
     private final EventLinkAssembler linkAssembler;
+    private final QuantumApplicationLinkAssembler quantumApplicationLinkAssembler;
 
     @Transactional
     @PostMapping
@@ -45,6 +48,24 @@ public class EventController {
     @GetMapping("/{name}")
     public ResponseEntity<EntityModel<EventDto>> getEvent(@PathVariable String name) {
         return new ResponseEntity<>(linkAssembler.toModel(service.getEvent(name), EventDto.class), HttpStatus.OK);
+    }
+
+    @Transactional
+    @GetMapping("/{name}/quantum-applications")
+    public ResponseEntity<CollectionModel<EntityModel<QuantumApplicationDto>>> getEventApplications(@PathVariable String name) {
+        return new ResponseEntity<>(quantumApplicationLinkAssembler.toModel(service.getEventApplications(name), QuantumApplicationDto.class), HttpStatus.OK);
+    }
+
+    @Transactional
+    @PostMapping("/{name}/quantum-applications/{applicationName}")
+    public ResponseEntity<EntityModel<EventDto>> registerQuantumApplication(@PathVariable String name, @PathVariable String applicationName) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.registerApplication(name, applicationName), EventDto.class), HttpStatus.OK);
+    }
+
+    @Transactional
+    @DeleteMapping("/{name}/quantum-applications/{applicationName}")
+    public ResponseEntity<EntityModel<EventDto>> unregisterQuantumApplication(@PathVariable String name, @PathVariable String applicationName) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.unregisterApplication(name, applicationName), EventDto.class), HttpStatus.OK);
     }
 
     @Transactional

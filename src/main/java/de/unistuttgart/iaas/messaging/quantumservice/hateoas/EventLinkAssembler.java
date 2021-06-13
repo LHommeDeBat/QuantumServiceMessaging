@@ -13,6 +13,7 @@ public class EventLinkAssembler extends GenericLinkAssembler<EventDto> {
     @Override
     public void addLinks(EntityModel<EventDto> resource) {
         resource.add(WebMvcLinkBuilder.linkTo(methodOn(EventController.class).getEvent(getName(resource))).withSelfRel());
+        resource.add(WebMvcLinkBuilder.linkTo(methodOn(EventController.class).getEventApplications(getName(resource))).withRel("quantum-applications"));
     }
 
     private String getName(EntityModel<EventDto> resource) {

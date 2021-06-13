@@ -13,6 +13,7 @@ public class QuantumApplicationLinkAssembler extends GenericLinkAssembler<Quantu
     @Override
     public void addLinks(EntityModel<QuantumApplicationDto> resource) {
         resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplication(getName(resource))).withSelfRel());
+        resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplicationEvents(getName(resource))).withRel("events"));
     }
 
     private String getName(EntityModel<QuantumApplicationDto> resource) {

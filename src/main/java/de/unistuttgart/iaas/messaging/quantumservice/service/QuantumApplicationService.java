@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.exception.QuantumApplicationScriptException;
@@ -35,6 +36,10 @@ public class QuantumApplicationService {
 
     public QuantumApplication getQuantumApplication(String name) {
         return repository.findByName(name).orElseThrow(() -> new NoSuchElementException("There is no quantum application with name '" + name + "'!"));
+    }
+
+    public Set<Event> getQuantumApplicationEvents(String name) {
+        return repository.findQuantumApplicationEvents(name);
     }
 
     public void deleteQuantumApplication(String name) {
