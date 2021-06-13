@@ -1,7 +1,7 @@
 package de.unistuttgart.iaas.messaging.quantumservice.controller;
 
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventLinkAssembler;
-import de.unistuttgart.iaas.messaging.quantumservice.model.dto.event.EventDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
 import de.unistuttgart.iaas.messaging.quantumservice.service.EventService;
 import de.unistuttgart.iaas.messaging.quantumservice.utils.ModelMapperUtils;
@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,7 @@ public class EventController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<EntityModel<EventDto>> createEvent(@RequestBody EventDto event) {
+    public ResponseEntity<EntityModel<EventDto>> createEvent(@Validated @RequestBody EventDto event) {
         Event createdEvent = service.createEvent(ModelMapperUtils.convert(event, Event.class));
         return new ResponseEntity<>(linkAssembler.toModel(createdEvent, EventDto.class), HttpStatus.OK);
     }

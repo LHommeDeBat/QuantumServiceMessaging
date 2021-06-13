@@ -1,16 +1,19 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.dto;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
 import lombok.Data;
 
 @Data
-public class QuantumApplicationDto {
+public class EventDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
@@ -19,6 +22,8 @@ public class QuantumApplicationDto {
     @NotBlank(message = "The name cannot be blank!")
     private String name;
 
-    @JsonIgnore
-    private String filepath;
+    @NotNull
+    private EventType type;
+
+    private Map<String, Integer> additionalProperties = new HashMap<>();
 }
