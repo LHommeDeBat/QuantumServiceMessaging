@@ -1,5 +1,6 @@
 package de.unistuttgart.iaas.messaging.quantumservice.service;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -36,6 +37,8 @@ public class EventService {
 
     public void deleteEvent(String name) {
         Event existingEvent = getEvent(name);
+        existingEvent.setQuantumApplications(new HashSet<>());
+        existingEvent = repository.save(existingEvent);
         repository.delete(existingEvent);
     }
 

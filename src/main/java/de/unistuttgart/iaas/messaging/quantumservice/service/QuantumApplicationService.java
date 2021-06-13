@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.exception.QuantumApplicationScriptException;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class QuantumApplicationService {
 
     private final QuantumApplicationRepository repository;
+    private final EventRepository eventRepository;
 
     public QuantumApplication createQuantumApplication(MultipartFile script, QuantumApplication quantumApplication) {
         QuantumApplication createdQuantumApplication = repository.save(quantumApplication);
@@ -44,6 +46,14 @@ public class QuantumApplicationService {
 
     public void deleteQuantumApplication(String name) {
         QuantumApplication existingQuantumApplication = getQuantumApplication(name);
+
+        // Unregister quantum application from all events
+        for (Event event: existingQuantumApplication.getEvents()) {
+            event.getQuantumApplications().removeIf(application -> application.getName().equals(name));
+            eventRepository.save(event);
+        }
+
+        // Delete quantum application and script from file system
         repository.delete(existingQuantumApplication);
         deleteFileFromFileSystem(existingQuantumApplication.getFilepath());
     }
