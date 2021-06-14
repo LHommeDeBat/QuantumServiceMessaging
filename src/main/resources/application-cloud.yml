@@ -7,11 +7,3 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
-
-ibm:
-  mq:
-    queue-manager: ${MQ_QUEUE_MANAGER}
-    channel: ${MQ_CHANNEL}
-    user: eventsource
-    password: ${MQ_PASSWORD}
-    conn-name: ${MQ_HOST}(${MQ_PORT})

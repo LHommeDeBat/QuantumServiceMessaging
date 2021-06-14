@@ -1,2 +1,1 @@
-# QuantumServiceMessaging
-QuantumService implemented with IBM MQ
+# event-source

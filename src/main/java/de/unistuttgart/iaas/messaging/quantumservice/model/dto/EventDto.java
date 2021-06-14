@@ -13,7 +13,6 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import lombok.Data;
 
 @Data
@@ -32,5 +31,5 @@ public class EventDto {
     private Map<String, Integer> additionalProperties = new HashMap<>();
 
     @JsonIgnore
-    private Set<QuantumApplication> quantumApplications = new HashSet<>();
+    private Set<QuantumApplicationDto> quantumApplications = new HashSet<>();
 }

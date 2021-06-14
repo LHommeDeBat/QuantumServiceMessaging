@@ -14,7 +14,8 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter
-public class HasId {
+public abstract class HasId {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(length = 16)
