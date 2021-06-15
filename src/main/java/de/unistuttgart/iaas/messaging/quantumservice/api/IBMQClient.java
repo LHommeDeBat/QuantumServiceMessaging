@@ -3,16 +3,10 @@ package de.unistuttgart.iaas.messaging.quantumservice.api;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.unistuttgart.iaas.messaging.quantumservice.configuration.IBMQProperties;
-import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.DeviceProperties;
-import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.Hub;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQJob;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.JobDownloadUrl;
-import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.QueueStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -28,10 +22,6 @@ public class IBMQClient {
 
     private final IBMQProperties ibmqProperties;
     private final RestTemplate restTemplate;
-
-    public List<Hub> getNetworks() {
-        return Arrays.asList(restTemplate.getForEntity(addTokenToUri("/Network"), Hub[].class).getBody());
-    }
 
     public IBMQJob getJob(String hub, String group, String project, String jobId) {
         String path = "/Network/" + hub + "/Groups/" + group + "/Projects/" + project + "/Jobs/" + jobId + "/v/1";
