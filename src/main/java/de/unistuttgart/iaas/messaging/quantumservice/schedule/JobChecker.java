@@ -18,7 +18,7 @@ public class JobChecker {
     private final IBMQClient ibmqClient;
 
     @Transactional
-    @Scheduled(initialDelay = 5000, fixedDelay = 10000)
+    // @Scheduled(initialDelay = 5000, fixedDelay = 10000)
     public void checkJobStatus() {
         List<Hub> hubs = ibmqClient.getNetworks();
         log.info("#Hubs: " + hubs.size());

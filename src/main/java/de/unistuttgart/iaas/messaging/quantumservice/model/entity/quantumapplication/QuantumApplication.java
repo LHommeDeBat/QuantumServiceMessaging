@@ -3,12 +3,15 @@ package de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplic
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.HasId;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,4 +29,7 @@ public class QuantumApplication extends HasId {
 
     @ManyToMany(mappedBy = "quantumApplications")
     private Set<Event> events = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Job> jobs = new HashSet<>();
 }

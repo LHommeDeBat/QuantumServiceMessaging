@@ -1,7 +1,5 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.dto;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -23,7 +21,4 @@ public class QuantumApplicationDto {
 
     @JsonIgnore
     private String filepath;
-
-    @JsonIgnore
-    private Set<EventDto> events = new HashSet<>();
 }

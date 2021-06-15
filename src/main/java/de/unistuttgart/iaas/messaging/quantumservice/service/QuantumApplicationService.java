@@ -9,6 +9,8 @@ import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventRepository;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.exception.QuantumApplicationScriptException;
@@ -25,6 +27,7 @@ public class QuantumApplicationService {
 
     private final QuantumApplicationRepository repository;
     private final EventRepository eventRepository;
+    private final JobRepository jobRepository;
 
     public QuantumApplication createQuantumApplication(MultipartFile script, QuantumApplication quantumApplication) {
         QuantumApplication createdQuantumApplication = repository.save(quantumApplication);
@@ -44,6 +47,10 @@ public class QuantumApplicationService {
         return repository.findQuantumApplicationEvents(name);
     }
 
+    public Set<Job> getQuantumApplicationJobs(String name) {
+        return jobRepository.findByQuantumApplicationName(name);
+    }
+
     public void deleteQuantumApplication(String name) {
         QuantumApplication existingQuantumApplication = getQuantumApplication(name);
 
@@ -51,6 +58,10 @@ public class QuantumApplicationService {
         for (Event event: existingQuantumApplication.getEvents()) {
             event.getQuantumApplications().removeIf(application -> application.getName().equals(name));
             eventRepository.save(event);
+        }
+
+        for (Job job : jobRepository.findByQuantumApplicationName(name)) {
+            jobRepository.delete(job);
         }
 
         // Delete quantum application and script from file system

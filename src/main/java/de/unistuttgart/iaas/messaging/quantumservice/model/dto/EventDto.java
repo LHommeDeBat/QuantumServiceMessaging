@@ -29,7 +29,4 @@ public class EventDto {
     private EventType type;
 
     private Map<String, Integer> additionalProperties = new HashMap<>();
-
-    @JsonIgnore
-    private Set<QuantumApplicationDto> quantumApplications = new HashSet<>();
 }

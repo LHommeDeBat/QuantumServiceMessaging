@@ -1,10 +1,16 @@
 package de.unistuttgart.iaas.messaging.quantumservice.controller;
 
+import java.util.Set;
+
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventLinkAssembler;
+import de.unistuttgart.iaas.messaging.quantumservice.hateoas.JobLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.QuantumApplicationLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.JobDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.QuantumApplicationDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import de.unistuttgart.iaas.messaging.quantumservice.service.EventService;
 import de.unistuttgart.iaas.messaging.quantumservice.utils.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +36,14 @@ public class EventController {
     private final EventService service;
     private final EventLinkAssembler linkAssembler;
     private final QuantumApplicationLinkAssembler quantumApplicationLinkAssembler;
+    private final JobLinkAssembler jobLinkAssembler;
+
+    @Transactional
+    @PostMapping("/{name}")
+    public ResponseEntity<CollectionModel<EntityModel<JobDto>>> fireEvent(@PathVariable String name, @RequestBody IBMQEventPayload payload) {
+        Set<Job> createdJobs = service.fireEvent(name, payload);
+        return new ResponseEntity<>(jobLinkAssembler.toModel(createdJobs, JobDto.class), HttpStatus.OK);
+    }
 
     @Transactional
     @PostMapping
