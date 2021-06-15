@@ -1,9 +1,12 @@
 package de.unistuttgart.iaas.messaging.quantumservice.schedule;
 
-import java.util.List;
+import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.api.IBMQClient;
-import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.Hub;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,11 +19,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class JobChecker {
 
     private final IBMQClient ibmqClient;
+    private final JobRepository jobRepository;
 
     @Transactional
     // @Scheduled(initialDelay = 5000, fixedDelay = 10000)
     public void checkJobStatus() {
-        List<Hub> hubs = ibmqClient.getNetworks();
-        log.info("#Hubs: " + hubs.size());
+        Set<Job> runningJobs = jobRepository.findRunningJobs();
+        log.info("Checking " + runningJobs.size() + " running jobs...");
+        for (Job runningJob : runningJobs) {
+            IBMQJob ibmqJob = ibmqClient.getJob("ibm-q", "open", "main", runningJob.getIbmqId());
+            runningJob.setStatus(JobStatus.valueOf(ibmqJob.getStatus()));
+            runningJob.setCreationDate(ibmqJob.getCreationDate());
+
+            if (ibmqJob.getStatus().equals("COMPLETED")) {
+                runningJob.setEndDate(ibmqJob.getEndDate());
+                runningJob.setResult(ibmqClient.getJobResult("ibm-q", "open", "main", runningJob.getIbmqId()));
+                runningJob.setSuccess(ibmqJob.getSummaryData().getSuccess());
+            }
+
+            jobRepository.save(runningJob);
+        }
     }
 }
