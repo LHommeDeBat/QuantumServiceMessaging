@@ -26,6 +26,7 @@ public class QuantumApplication extends HasId {
     private String name;
 
     private String filepath;
+    private String executionFilepath;
 
     @ManyToMany(mappedBy = "quantumApplications")
     private Set<Event> events = new HashSet<>();

@@ -1,6 +1,7 @@
 package de.unistuttgart.iaas.messaging.quantumservice.service;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +33,7 @@ public class QuantumApplicationService {
     public QuantumApplication createQuantumApplication(MultipartFile script, QuantumApplication quantumApplication) {
         QuantumApplication createdQuantumApplication = repository.save(quantumApplication);
         storeFileToFileSystem(quantumApplication.getFilepath(), script);
+        createExecutionFile(quantumApplication);
         return createdQuantumApplication;
     }
 
@@ -66,7 +68,7 @@ public class QuantumApplicationService {
 
         // Delete quantum application and script from file system
         repository.delete(existingQuantumApplication);
-        deleteFileFromFileSystem(existingQuantumApplication.getFilepath());
+        deleteFileFromFileSystem(existingQuantumApplication.getFilepath(), existingQuantumApplication.getExecutionFilepath());
     }
 
     private void storeFileToFileSystem(String filepath, MultipartFile script) {
@@ -82,9 +84,38 @@ public class QuantumApplicationService {
         }
     }
 
-    private void deleteFileFromFileSystem(String filepath) {
+    private void createExecutionFile(QuantumApplication application) {
+        try {
+            FileWriter fw = new FileWriter(application.getExecutionFilepath());
+            fw.write("import sys");
+            fw.write(System.lineSeparator());
+            fw.write("import json");
+            fw.write(System.lineSeparator());
+            fw.write("import " + application.getName());
+            fw.write(System.lineSeparator());
+            fw.write(System.lineSeparator());
+            fw.write("params = {");
+            fw.write(System.lineSeparator());
+            fw.write("    \"apiToken\": sys.argv[1],");
+            fw.write(System.lineSeparator());
+            fw.write("    \"device\": sys.argv[2]");
+            fw.write(System.lineSeparator());
+            fw.write("}");
+            fw.write(System.lineSeparator());
+            fw.write(System.lineSeparator());
+            fw.write("result = " + application.getName() + ".main(params)");
+            fw.write(System.lineSeparator());
+            fw.write("print(json.dumps(result))");
+            fw.close();
+        } catch (IOException e) {
+            throw new QuantumApplicationScriptException("Could not generate execution script", e);
+        }
+    }
+
+    private void deleteFileFromFileSystem(String filepath, String executionFilepath) {
         try {
             Files.deleteIfExists(Path.of(filepath));
+            Files.deleteIfExists(Path.of(executionFilepath));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new QuantumApplicationScriptException("Could not delete script!", e);

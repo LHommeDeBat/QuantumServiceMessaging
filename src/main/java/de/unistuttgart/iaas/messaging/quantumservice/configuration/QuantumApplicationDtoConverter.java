@@ -18,6 +18,7 @@ public class QuantumApplicationDtoConverter implements Converter<String, Quantum
         try {
             QuantumApplicationDto dto = objectMapper.readValue(s, QuantumApplicationDto.class);
             dto.setFilepath("actions/" + dto.getName() + ".py");
+            dto.setExecutionFilepath("actions/execution-" + dto.getName() + ".py");
             return dto;
         } catch (Exception e) {
             log.error("Could not convert JSON-String '{}' to DTO", s);

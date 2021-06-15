@@ -26,17 +26,21 @@ class QuantumServiceApplicationTests {
     void testExecViaFile() throws IOException {
         FileWriter fw = new FileWriter("actions/main.py");
 
-        fw.write("import json");
+        fw.write("import sys");
         fw.write(System.lineSeparator());
         fw.write("import numpytest");
         fw.write(System.lineSeparator());
         fw.write(System.lineSeparator());
-        fw.write("x = '{\"name\": \"Stefan\"}'");
+        fw.write("params = {");
         fw.write(System.lineSeparator());
-        fw.write("y = json.loads(x)");
+        fw.write("    \"apiToken\": sys.argv[1],");
+        fw.write(System.lineSeparator());
+        fw.write("    \"device\": sys.argv[2]");
+        fw.write(System.lineSeparator());
+        fw.write("}");
         fw.write(System.lineSeparator());
         fw.write(System.lineSeparator());
-        fw.write("result = numpytest.main(y)");
+        fw.write("result = numpytest.main(params)");
         fw.write(System.lineSeparator());
         fw.write("print(result)");
 
