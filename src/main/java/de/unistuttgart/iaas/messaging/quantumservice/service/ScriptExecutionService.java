@@ -14,7 +14,6 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
-import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,8 +27,9 @@ public class ScriptExecutionService {
     private final JobRepository jobRepository;
     private final ObjectMapper objectMapper;
 
-    public Job executeScript(QuantumApplication application, IBMQEventPayload payload) {
-        String[] command = generateCommand(application, payload);
+    public Job executeScript(QuantumApplication application, String ibmqDevice) {
+        log.info("Executing application {} on device {}...", application.getName(), ibmqDevice);
+        String[] command = generateCommand(application, ibmqDevice);
         String executionPrint = null;
 
         try {
@@ -39,7 +39,6 @@ public class ScriptExecutionService {
             String line;
             while ((line = reader.readLine()) != null) {
                 executionPrint = line;
-                log.info("CMD: " + executionPrint);
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
@@ -50,6 +49,7 @@ public class ScriptExecutionService {
         ExecutionResult result;
         try {
             result = objectMapper.readValue(executionPrint, ExecutionResult.class);
+            log.info("Execution of application {} on device {} completed! Job created!", application.getName(), ibmqDevice);
         } catch (JsonProcessingException e) {
             result = null;
             log.error("Could not process result of quantum script!", e);
@@ -65,12 +65,12 @@ public class ScriptExecutionService {
         return job;
     }
 
-    private String[] generateCommand(QuantumApplication application, IBMQEventPayload payload) {
+    private String[] generateCommand(QuantumApplication application, String ibmqDevice) {
         List<String> command = new ArrayList<>();
         command.add("python");
         command.add(application.getExecutionFilepath());
         command.add(ibmqProperties.getApiToken());
-        command.add(payload.getDevice());
+        command.add(ibmqDevice);
         return command.toArray(new String[0]);
     }
 }

@@ -6,6 +6,8 @@ spring:
     name: QuantumServiceMessaging
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
+  jms:
+    pub-sub-domain: true
 
 ibmq:
   apiHost: https://api.quantum-computing.ibm.com/v2

@@ -27,7 +27,7 @@ public class EventService {
 
         Set<QuantumApplication> eventApplications = getEventApplications(name);
         for (QuantumApplication eventApplication : eventApplications) {
-            createdJobs.add(scriptExecutionService.executeScript(eventApplication, payload));
+            createdJobs.add(scriptExecutionService.executeScript(eventApplication, payload.getDevice()));
         }
         return createdJobs;
     }
