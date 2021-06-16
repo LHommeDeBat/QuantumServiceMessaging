@@ -3,6 +3,7 @@ package de.unistuttgart.iaas.messaging.quantumservice.schedule;
 import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.api.IBMQClient;
+import de.unistuttgart.iaas.messaging.quantumservice.messaging.JobResultSender;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
@@ -20,9 +21,10 @@ public class JobChecker {
 
     private final IBMQClient ibmqClient;
     private final JobRepository jobRepository;
+    private final JobResultSender jobResultSender;
 
     @Transactional
-    // @Scheduled(initialDelay = 5000, fixedDelay = 10000)
+    @Scheduled(initialDelay = 5000, fixedDelay = 10000)
     public void checkJobStatus() {
         Set<Job> runningJobs = jobRepository.findRunningJobs();
         log.info("Checking " + runningJobs.size() + " running jobs...");
@@ -35,6 +37,8 @@ public class JobChecker {
                 runningJob.setEndDate(ibmqJob.getEndDate());
                 runningJob.setResult(ibmqClient.getJobResult("ibm-q", "open", "main", runningJob.getIbmqId()));
                 runningJob.setSuccess(ibmqJob.getSummaryData().getSuccess());
+
+                jobResultSender.sendJobResult(runningJob.getResult());
             }
 
             jobRepository.save(runningJob);
