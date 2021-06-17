@@ -7,6 +7,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,11 @@ public class EventProcessor {
     private final EventRepository eventRepository;
     private final ScriptExecutionService scriptExecutionService;
 
-    public void processEvent(EventType type, String ibmqDevice, Map<String, Object> additionalProperties) {
-        Set<Event> eventsToTrigger = eventRepository.findByEventData(type, additionalProperties);
+    public void processEvent(IBMQEventPayload eventPayload) {
+        Set<QuantumApplication> applicationsToExecute = eventRepository.findByEventData(eventPayload);
 
-        for (Event event : eventsToTrigger) {
-            for (QuantumApplication applicationToExecute : event.getQuantumApplications()) {
-                scriptExecutionService.executeScript(applicationToExecute, ibmqDevice);
-            }
+        for (QuantumApplication applicationToExecute : applicationsToExecute) {
+            scriptExecutionService.executeScript(applicationToExecute, eventPayload.getDevice());
         }
     }
 }

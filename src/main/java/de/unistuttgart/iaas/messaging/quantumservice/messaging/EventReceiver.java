@@ -8,6 +8,7 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import de.unistuttgart.iaas.messaging.quantumservice.service.EventProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,22 +27,19 @@ public class EventReceiver {
     @JmsListener(destination = "EVENT.TOPIC")
     public void onEvent(Message message) throws JMSException {
         log.info("Received Message from Topic");
-        Map<String, Object> additionalProperties = new HashMap<>();
-
-        EventType eventType = null;
-        String device = null;
+        IBMQEventPayload eventPayload = new IBMQEventPayload();
 
         if (message instanceof MapMessage) {
             MapMessage mapMessage = (MapMessage) message;
 
-            eventType = EventType.valueOf(mapMessage.getString("type"));
-            device = mapMessage.getString("device");
+            eventPayload.setEventType(EventType.valueOf(mapMessage.getString("type")));
+            eventPayload.setDevice(mapMessage.getString("device"));
 
-            if (eventType == EventType.QUEUE_SIZE) {
-                additionalProperties.put("queueSize", mapMessage.getInt("queueSize"));
+            if (mapMessage.itemExists("queueSize")) {
+                eventPayload.addAdditionalProperty("queueSize", mapMessage.getInt("queueSize"));
             }
         }
 
-        eventProcessor.processEvent(eventType, device, additionalProperties);
+        eventProcessor.processEvent(eventPayload);
     }
 }

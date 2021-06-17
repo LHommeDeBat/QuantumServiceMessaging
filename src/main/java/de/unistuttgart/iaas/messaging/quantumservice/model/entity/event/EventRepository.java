@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,12 +23,12 @@ public interface EventRepository extends CrudRepository<Event, UUID> {
     @Query("SELECT qa FROM Event e JOIN e.quantumApplications qa WHERE e.name = :name")
     Set<QuantumApplication> findEventApplications(@Param("name") String name);
 
-    @Query("SELECT e FROM Event e JOIN e.additionalProperties p WHERE e.type = 'QUEUE_SIZE' AND KEY(p) = 'queueSize' AND p <= :queueSize ")
-    Set<Event> findQueueSizeEventToTrigger(@Param("queueSize") Integer queueSize);
+    @Query("SELECT qa FROM Event e JOIN e.additionalProperties p JOIN e.quantumApplications qa WHERE e.type = 'QUEUE_SIZE' AND KEY(p) = 'queueSize' AND p >= :queueSize")
+    Set<QuantumApplication> findApplicationByQueueSizeEvent(@Param("queueSize") Integer queueSize);
 
-    default Set<Event> findByEventData(EventType type, Map<String, Object> eventProperties) {
-        if (type == EventType.QUEUE_SIZE) {
-            return findQueueSizeEventToTrigger((Integer) eventProperties.get("queueSize"));
+    default Set<QuantumApplication> findByEventData(IBMQEventPayload eventPayload) {
+        if (eventPayload.getEventType() == EventType.QUEUE_SIZE) {
+            return findApplicationByQueueSizeEvent((Integer) eventPayload.getAdditionalProperties().get("queueSize"));
         }
         return new HashSet<>();
     }

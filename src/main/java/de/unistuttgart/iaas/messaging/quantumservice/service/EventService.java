@@ -1,12 +1,10 @@
 package de.unistuttgart.iaas.messaging.quantumservice.service;
 
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventRepository;
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +18,10 @@ public class EventService {
 
     private final EventRepository repository;
     private final QuantumApplicationService applicationService;
-    private final ScriptExecutionService scriptExecutionService;
+    private final EventProcessor eventProcessor;
 
-    public Set<Job> fireEvent(String name, IBMQEventPayload payload) {
-        Set<Job> createdJobs = new HashSet<>();
-
-        Set<QuantumApplication> eventApplications = getEventApplications(name);
-        for (QuantumApplication eventApplication : eventApplications) {
-            createdJobs.add(scriptExecutionService.executeScript(eventApplication, payload.getDevice()));
-        }
-        return createdJobs;
+    public void fireEvent(IBMQEventPayload eventPayload) {
+        eventProcessor.processEvent(eventPayload);
     }
 
     public Event createEvent(Event event) {

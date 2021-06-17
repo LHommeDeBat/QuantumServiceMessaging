@@ -1,14 +1,20 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.ibmq;
 
-import lombok.AllArgsConstructor;
+import java.util.HashMap;
+import java.util.Map;
+
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class IBMQEventPayload {
-    private String hub;
-    private String group;
-    private String project;
+    private EventType eventType;
     private String device;
-    private String apiToken;
+    private Map<String, Object> additionalProperties = new HashMap<>();
+
+    public void addAdditionalProperty(String key, Object value) {
+        additionalProperties.put(key, value);
+    }
 }
