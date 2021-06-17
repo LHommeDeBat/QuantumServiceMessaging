@@ -34,6 +34,6 @@ public class Event extends HasId {
     @ElementCollection
     private Map<String, Integer> additionalProperties = new HashMap<>();
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<QuantumApplication> quantumApplications = new HashSet<>();
 }

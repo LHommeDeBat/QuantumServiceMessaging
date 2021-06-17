@@ -49,10 +49,7 @@ public class EventService {
     }
 
     public void deleteEvent(String name) {
-        Event existingEvent = getEvent(name);
-        existingEvent.setQuantumApplications(new HashSet<>());
-        existingEvent = repository.save(existingEvent);
-        repository.delete(existingEvent);
+        repository.delete(getEvent(name));
     }
 
     public Event registerApplication(String name, String applicationName) {

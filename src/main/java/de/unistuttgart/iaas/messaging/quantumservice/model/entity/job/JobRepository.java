@@ -11,7 +11,6 @@ public interface JobRepository extends CrudRepository<Job, UUID> {
     Optional<Job> findById(UUID id);
     Set<Job> findAll();
     Set<Job> findByStatusNot(JobStatus status);
-    Set<Job> findByQuantumApplicationName(String name);
 
     default Set<Job> findRunningJobs() {
         return findByStatusNot(JobStatus.COMPLETED);
