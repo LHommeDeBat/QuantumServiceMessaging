@@ -7,6 +7,8 @@ import de.unistuttgart.iaas.messaging.quantumservice.messaging.JobResultSender;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ public class JobChecker {
 
     private final IBMQClient ibmqClient;
     private final JobRepository jobRepository;
+    private final QuantumApplicationRepository quantumApplicationRepository;
     private final JobResultSender jobResultSender;
 
     @Transactional
@@ -41,7 +44,15 @@ public class JobChecker {
                 jobResultSender.sendJobResult(runningJob.getResult());
             }
 
-            jobRepository.save(runningJob);
+            runningJob = jobRepository.save(runningJob);
+
+            // If Job completed -> activate execution of Application
+            if (runningJob.getStatus() == JobStatus.COMPLETED) {
+                QuantumApplication jobApplication = runningJob.getQuantumApplication();
+                log.info("Reactivating appliaction '{}' after successfully executed job...", jobApplication.getName());
+                jobApplication.setExecutionEnabled(true);
+                quantumApplicationRepository.save(jobApplication);
+            }
         }
     }
 }

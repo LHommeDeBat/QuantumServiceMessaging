@@ -24,4 +24,7 @@ public class QuantumApplicationDto {
 
     @JsonIgnore
     private String executionFilepath;
+
+    @JsonIgnore
+    private boolean executionEnabled;
 }

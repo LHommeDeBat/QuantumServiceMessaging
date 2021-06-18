@@ -1,7 +1,6 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.entity.event;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +22,7 @@ public interface EventRepository extends CrudRepository<Event, UUID> {
     @Query("SELECT qa FROM Event e JOIN e.quantumApplications qa WHERE e.name = :name")
     Set<QuantumApplication> findEventApplications(@Param("name") String name);
 
-    @Query("SELECT qa FROM Event e JOIN e.additionalProperties p JOIN e.quantumApplications qa WHERE e.type = 'QUEUE_SIZE' AND KEY(p) = 'queueSize' AND p >= :queueSize")
+    @Query("SELECT qa FROM Event e JOIN e.additionalProperties p JOIN e.quantumApplications qa WHERE e.type = 'QUEUE_SIZE' AND KEY(p) = 'queueSize' AND p >= :queueSize AND qa.executionEnabled = TRUE")
     Set<QuantumApplication> findApplicationByQueueSizeEvent(@Param("queueSize") Integer queueSize);
 
     default Set<QuantumApplication> findByEventData(IBMQEventPayload eventPayload) {

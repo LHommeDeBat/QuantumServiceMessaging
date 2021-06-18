@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.unistuttgart.iaas.messaging.quantumservice.configuration.IBMQProperties;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.ExecutionResult;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,10 +24,10 @@ import org.springframework.stereotype.Service;
 public class ScriptExecutionService {
 
     private final IBMQProperties ibmqProperties;
-    private final JobRepository jobRepository;
+    private final QuantumApplicationRepository quantumApplicationRepository;
     private final ObjectMapper objectMapper;
 
-    public Job executeScript(QuantumApplication application, String ibmqDevice) {
+    public void executeScript(QuantumApplication application, String ibmqDevice) {
         log.info("Executing application {} on device {}...", application.getName(), ibmqDevice);
         String[] command = generateCommand(application, ibmqDevice);
         String executionPrint = null;
@@ -42,7 +42,6 @@ public class ScriptExecutionService {
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            return null;
         }
 
 
@@ -60,9 +59,10 @@ public class ScriptExecutionService {
         job.setIbmqId(result.getJobId());
         job.setStatus(JobStatus.CREATED);
         job.setQuantumApplication(application);
-        job = jobRepository.save(job);
 
-        return job;
+        application.getJobs().add(job);
+        application.setExecutionEnabled(false);
+        quantumApplicationRepository.save(application);
     }
 
     private String[] generateCommand(QuantumApplication application, String ibmqDevice) {
