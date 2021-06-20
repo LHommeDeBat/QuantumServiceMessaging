@@ -30,7 +30,7 @@ public class QuantumApplication extends HasId {
     private String executionFilepath;
     private boolean executionEnabled;
 
-    @ManyToMany(mappedBy = "quantumApplications")
+    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "quantumApplications")
     private Set<Event> events = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "quantumApplication")
