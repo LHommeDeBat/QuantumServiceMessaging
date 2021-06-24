@@ -22,7 +22,7 @@ public class EventProcessor {
         Set<QuantumApplication> applicationsToExecute = eventRepository.findByEventData(eventPayload);
 
         for (QuantumApplication applicationToExecute : applicationsToExecute) {
-            scriptExecutionService.executeScript(applicationToExecute, eventPayload.getDevice());
+            scriptExecutionService.executeScript(applicationToExecute, eventPayload);
         }
     }
 }

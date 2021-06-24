@@ -14,6 +14,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,9 @@ public class ScriptExecutionService {
     private final QuantumApplicationRepository quantumApplicationRepository;
     private final ObjectMapper objectMapper;
 
-    public void executeScript(QuantumApplication application, String ibmqDevice) {
-        log.info("Executing application {} on device {}...", application.getName(), ibmqDevice);
-        String[] command = generateCommand(application, ibmqDevice);
+    public void executeScript(QuantumApplication application, IBMQEventPayload eventPayload) {
+        log.info("Executing application {} on device {}...", application.getName(), eventPayload.getDevice());
+        String[] command = generateCommand(application, eventPayload.getDevice());
         String executionPrint = null;
 
         try {
@@ -48,7 +49,7 @@ public class ScriptExecutionService {
         ExecutionResult result;
         try {
             result = objectMapper.readValue(executionPrint, ExecutionResult.class);
-            log.info("Execution of application {} on device {} completed! Job created!", application.getName(), ibmqDevice);
+            log.info("Execution of application {} on device {} completed! Job created!", application.getName(), eventPayload.getDevice());
         } catch (JsonProcessingException e) {
             result = null;
             log.error("Could not process result of quantum script!", e);
@@ -58,6 +59,7 @@ public class ScriptExecutionService {
         Job job = new Job();
         job.setIbmqId(result.getJobId());
         job.setStatus(JobStatus.CREATED);
+        job.setReplyTo(eventPayload.getReplyTo());
         job.setQuantumApplication(application);
 
         application.getJobs().add(job);

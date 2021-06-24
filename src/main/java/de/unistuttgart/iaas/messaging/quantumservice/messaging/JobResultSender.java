@@ -13,9 +13,9 @@ public class JobResultSender {
 
     private final JmsTemplate jmsTemplate;
 
-    public void sendJobResult(JSONObject result) {
+    public void sendJobResult(JSONObject result, String destination) {
         log.info("Sending Job-Result...");
-        jmsTemplate.convertAndSend("JOB.RESULT.QUEUE", result.toString());
+        jmsTemplate.convertAndSend(destination, result.toString());
         log.info("Job-Result was sent!");
     }
 }

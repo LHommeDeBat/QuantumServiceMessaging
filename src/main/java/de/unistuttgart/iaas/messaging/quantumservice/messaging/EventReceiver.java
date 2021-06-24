@@ -1,8 +1,6 @@
 package de.unistuttgart.iaas.messaging.quantumservice.messaging;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -35,11 +33,18 @@ public class EventReceiver {
             eventPayload.setEventType(EventType.valueOf(mapMessage.getString("type")));
             eventPayload.setDevice(mapMessage.getString("device"));
 
+            eventPayload.setReplyTo(jmsDestinationToString(mapMessage.getJMSReplyTo()));
+
             if (mapMessage.itemExists("queueSize")) {
                 eventPayload.addAdditionalProperty("queueSize", mapMessage.getInt("queueSize"));
             }
         }
 
         eventProcessor.processEvent(eventPayload);
+    }
+
+    private String jmsDestinationToString(Destination destination) {
+        String[] replyToSplit = destination.toString().split("/");
+        return replyToSplit[replyToSplit.length - 1];
     }
 }

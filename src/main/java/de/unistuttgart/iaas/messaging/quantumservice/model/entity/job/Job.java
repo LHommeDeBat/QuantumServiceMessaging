@@ -33,6 +33,8 @@ public class Job extends HasId {
     @Convert(converter= JobResultConverter.class)
     private JSONObject result;
 
+    private String replyTo;
+
     private ZonedDateTime creationDate;
     private ZonedDateTime endDate;
 

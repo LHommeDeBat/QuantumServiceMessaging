@@ -41,7 +41,7 @@ public class JobChecker {
                 runningJob.setResult(ibmqClient.getJobResult("ibm-q", "open", "main", runningJob.getIbmqId()));
                 runningJob.setSuccess(ibmqJob.getSummaryData().getSuccess());
 
-                jobResultSender.sendJobResult(runningJob.getResult());
+                jobResultSender.sendJobResult(runningJob.getResult(), runningJob.getReplyTo());
             }
 
             runningJob = jobRepository.save(runningJob);
