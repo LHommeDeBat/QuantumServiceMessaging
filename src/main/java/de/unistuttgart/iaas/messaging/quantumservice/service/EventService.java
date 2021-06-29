@@ -22,7 +22,7 @@ public class EventService {
     private final EventProcessor eventProcessor;
 
     public void fireEvent(IBMQEventPayload eventPayload) {
-        eventProcessor.processEvent(eventPayload);
+        new Thread(() -> eventProcessor.processEvent(eventPayload)).start();
     }
 
     public Event createEvent(Event event) {
