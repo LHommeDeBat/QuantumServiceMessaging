@@ -7,6 +7,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.JobDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.QuantumApplicationDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import de.unistuttgart.iaas.messaging.quantumservice.service.QuantumApplicationService;
 import de.unistuttgart.iaas.messaging.quantumservice.utils.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +44,13 @@ public class QuantumApplicationController {
     public ResponseEntity<EntityModel<QuantumApplicationDto>> createQuantumApplication(@RequestParam MultipartFile script, @RequestParam QuantumApplicationDto dto) {
         QuantumApplication createdQuantumApplication = service.createQuantumApplication(script, ModelMapperUtils.convert(dto, QuantumApplication.class));
         return new ResponseEntity<>(linkAssembler.toModel(createdQuantumApplication, QuantumApplicationDto.class), HttpStatus.OK);
+    }
+
+    @Transactional
+    @PostMapping("/{name}/invoke")
+    public ResponseEntity<Void> invokeQuantumApplication(@PathVariable String name, @RequestBody IBMQEventPayload payload) {
+        service.invokeAction(name, payload);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional

@@ -14,6 +14,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.exception.QuantumApplicationScriptException;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -27,12 +28,17 @@ public class QuantumApplicationService {
 
     private final QuantumApplicationRepository repository;
     private final EventRepository eventRepository;
+    private final EventProcessor eventProcessor;
 
     public QuantumApplication createQuantumApplication(MultipartFile script, QuantumApplication quantumApplication) {
         QuantumApplication createdQuantumApplication = repository.save(quantumApplication);
         storeFileToFileSystem(quantumApplication.getFilepath(), script);
         createExecutionFile(quantumApplication);
         return createdQuantumApplication;
+    }
+
+    public void invokeAction(String name, IBMQEventPayload payload) {
+        new Thread(() -> eventProcessor.invokeAction(name, payload)).start();
     }
 
     public Set<QuantumApplication> getQuantumApplications() {

@@ -18,6 +18,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class ScriptExecutionService {
     private final QuantumApplicationRepository quantumApplicationRepository;
     private final ObjectMapper objectMapper;
 
+    @Transactional
     public void executeScript(QuantumApplication application, IBMQEventPayload eventPayload) {
         log.info("Executing application {} on device {}...", application.getName(), eventPayload.getDevice());
         String[] command = generateCommand(application, eventPayload.getDevice());
