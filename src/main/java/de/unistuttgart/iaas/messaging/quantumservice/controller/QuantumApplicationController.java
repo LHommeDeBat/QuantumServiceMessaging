@@ -11,6 +11,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload
 import de.unistuttgart.iaas.messaging.quantumservice.service.QuantumApplicationService;
 import de.unistuttgart.iaas.messaging.quantumservice.utils.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,13 @@ public class QuantumApplicationController {
     public ResponseEntity<Void> invokeQuantumApplication(@PathVariable String name, @RequestBody IBMQEventPayload payload) {
         service.invokeAction(name, payload);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    @GetMapping("/{name}/script")
+    public ResponseEntity<ByteArrayResource> downloadQuantumApplicationScript(@PathVariable String name) {
+        ByteArrayResource resource = service.downloadQuantumApplicationScript(name);
+        return ResponseEntity.ok().contentLength(resource.contentLength()).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 
     @Transactional

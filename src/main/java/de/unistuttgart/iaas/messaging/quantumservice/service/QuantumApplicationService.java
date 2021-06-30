@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +41,18 @@ public class QuantumApplicationService {
 
     public void invokeAction(String name, IBMQEventPayload payload) {
         new Thread(() -> eventProcessor.invokeAction(name, payload)).start();
+    }
+
+    public ByteArrayResource downloadQuantumApplicationScript(String name) {
+        QuantumApplication application = getQuantumApplication(name);
+        Path scriptPath = Paths.get(application.getFilepath());
+
+        try {
+            return new ByteArrayResource(Files.readAllBytes(scriptPath));
+        } catch (IOException e) {
+            log.error("Could not read file of quantum application '{}'", application.getName(), e);
+            throw new QuantumApplicationScriptException(e.getMessage());
+        }
     }
 
     public Set<QuantumApplication> getQuantumApplications() {
