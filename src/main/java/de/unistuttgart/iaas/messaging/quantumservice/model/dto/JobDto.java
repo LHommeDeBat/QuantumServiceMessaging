@@ -13,7 +13,9 @@ public class JobDto {
     private UUID id;
     private String ibmqId;
     private JobStatus status;
+    private String device;
     private String result;
+    private ZonedDateTime scriptExecutionDate;
     private ZonedDateTime creationDate;
     private ZonedDateTime endDate;
     private Boolean success;

@@ -3,6 +3,7 @@ package de.unistuttgart.iaas.messaging.quantumservice.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class ScriptExecutionService {
         log.info("Executing application {} on device {}...", application.getName(), eventPayload.getDevice());
         String[] command = generateCommand(application, eventPayload.getDevice());
         String executionPrint = null;
+        ZonedDateTime scriptExecutionDate = ZonedDateTime.now();
 
         try {
             Process p = Runtime.getRuntime().exec(command);
@@ -61,7 +63,9 @@ public class ScriptExecutionService {
         Job job = new Job();
         job.setIbmqId(result.getJobId());
         job.setStatus(JobStatus.CREATED);
+        job.setDevice(eventPayload.getDevice());
         job.setReplyTo(eventPayload.getReplyTo());
+        job.setScriptExecutionDate(scriptExecutionDate);
         job.setQuantumApplication(application);
 
         application.getJobs().add(job);

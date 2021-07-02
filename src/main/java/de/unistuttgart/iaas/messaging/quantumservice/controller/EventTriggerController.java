@@ -6,7 +6,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventTriggerDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.QuantumApplicationDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTrigger;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
-import de.unistuttgart.iaas.messaging.quantumservice.service.EventService;
+import de.unistuttgart.iaas.messaging.quantumservice.service.EventTriggerService;
 import de.unistuttgart.iaas.messaging.quantumservice.utils.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EventTriggerController {
 
-    private final EventService service;
+    private final EventTriggerService service;
     private final EventTriggerLinkAssembler linkAssembler;
     private final QuantumApplicationLinkAssembler quantumApplicationLinkAssembler;
 

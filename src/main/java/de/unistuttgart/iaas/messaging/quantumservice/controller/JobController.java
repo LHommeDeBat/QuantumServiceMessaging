@@ -6,8 +6,9 @@ import de.unistuttgart.iaas.messaging.quantumservice.hateoas.JobLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.JobDto;
 import de.unistuttgart.iaas.messaging.quantumservice.service.JobService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,8 @@ public class JobController {
 
     @Transactional
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<JobDto>>> getJobs() {
-        return new ResponseEntity<>(linkAssembler.toModel(service.findAll(), JobDto.class), HttpStatus.OK);
+    public ResponseEntity<PagedModel<EntityModel<JobDto>>> getJobs(Pageable pageable) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.findAll(pageable), JobDto.class), HttpStatus.OK);
     }
 
     @Transactional

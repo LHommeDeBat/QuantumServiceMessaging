@@ -29,12 +29,15 @@ public class Job extends HasId {
     @Enumerated(EnumType.STRING)
     private JobStatus status;
 
+    private String device;
+
     @Lob
     @Convert(converter= JobResultConverter.class)
     private JSONObject result;
 
     private String replyTo;
 
+    private ZonedDateTime scriptExecutionDate;
     private ZonedDateTime creationDate;
     private ZonedDateTime endDate;
 

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EventService {
+public class EventTriggerService {
 
     private final EventTriggerRepository repository;
     private final QuantumApplicationService applicationService;
