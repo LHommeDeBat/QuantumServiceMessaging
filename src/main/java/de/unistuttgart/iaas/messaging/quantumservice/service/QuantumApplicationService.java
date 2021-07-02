@@ -9,8 +9,8 @@ import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventRepository;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTrigger;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTriggerRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class QuantumApplicationService {
 
     private final QuantumApplicationRepository repository;
-    private final EventRepository eventRepository;
+    private final EventTriggerRepository eventTriggerRepository;
     private final EventProcessor eventProcessor;
 
     public QuantumApplication createQuantumApplication(MultipartFile script, QuantumApplication quantumApplication) {
@@ -63,8 +63,8 @@ public class QuantumApplicationService {
         return repository.findByName(name).orElseThrow(() -> new NoSuchElementException("There is no quantum application with name '" + name + "'!"));
     }
 
-    public Set<Event> getQuantumApplicationEvents(String name) {
-        return repository.findQuantumApplicationEvents(name);
+    public Set<EventTrigger> getQuantumApplicationEventTriggers(String name) {
+        return repository.findQuantumApplicationEventTriggers(name);
     }
 
     public Set<Job> getQuantumApplicationJobs(String name) {
@@ -75,9 +75,9 @@ public class QuantumApplicationService {
         QuantumApplication existingQuantumApplication = getQuantumApplication(name);
 
         // Unregister quantum application from all events
-        for (Event event: existingQuantumApplication.getEvents()) {
+        for (EventTrigger event: existingQuantumApplication.getEventTriggers()) {
             event.getQuantumApplications().removeIf(application -> application.getName().equals(name));
-            eventRepository.save(event);
+            eventTriggerRepository.save(event);
         }
 
         // Delete quantum application and script from file system

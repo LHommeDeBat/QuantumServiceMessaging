@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTrigger;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -18,8 +18,8 @@ public interface QuantumApplicationRepository extends CrudRepository<QuantumAppl
 
     Set<QuantumApplication> findAll();
 
-    @Query("SELECT e FROM QuantumApplication qa JOIN qa.events e WHERE qa.name = :name")
-    Set<Event> findQuantumApplicationEvents(@Param("name") String name);
+    @Query("SELECT e FROM QuantumApplication qa JOIN qa.eventTriggers e WHERE qa.name = :name")
+    Set<EventTrigger> findQuantumApplicationEventTriggers(@Param("name") String name);
 
     @Query("SELECT j FROM QuantumApplication qa JOIN qa.jobs j WHERE qa.name = :name")
     Set<Job> findQuantumApplicationJobs(@Param("name") String name);

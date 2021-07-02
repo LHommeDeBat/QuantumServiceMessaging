@@ -1,10 +1,10 @@
 package de.unistuttgart.iaas.messaging.quantumservice.controller;
 
-import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventLinkAssembler;
+import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventTriggerLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.QuantumApplicationLinkAssembler;
-import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventTriggerDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.QuantumApplicationDto;
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTrigger;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import de.unistuttgart.iaas.messaging.quantumservice.service.EventService;
 import de.unistuttgart.iaas.messaging.quantumservice.utils.ModelMapperUtils;
@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping(value = "/events")
+@RequestMapping(value = "/event-triggers")
 @RequiredArgsConstructor
-public class EventController {
+public class EventTriggerController {
 
     private final EventService service;
-    private final EventLinkAssembler linkAssembler;
+    private final EventTriggerLinkAssembler linkAssembler;
     private final QuantumApplicationLinkAssembler quantumApplicationLinkAssembler;
 
     @Transactional
@@ -43,45 +43,45 @@ public class EventController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<EntityModel<EventDto>> createEvent(@Validated @RequestBody EventDto event) {
-        Event createdEvent = service.createEvent(ModelMapperUtils.convert(event, Event.class));
-        return new ResponseEntity<>(linkAssembler.toModel(createdEvent, EventDto.class), HttpStatus.OK);
+    public ResponseEntity<EntityModel<EventTriggerDto>> createEventTrigger(@Validated @RequestBody EventTriggerDto eventTrigger) {
+        EventTrigger createdEvent = service.createEventTrigger(ModelMapperUtils.convert(eventTrigger, EventTrigger.class));
+        return new ResponseEntity<>(linkAssembler.toModel(createdEvent, EventTriggerDto.class), HttpStatus.OK);
     }
 
     @Transactional
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<EventDto>>> getEvents() {
-        return new ResponseEntity<>(linkAssembler.toModel(service.getEvents(), EventDto.class), HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<EventTriggerDto>>> getEventTriggers() {
+        return new ResponseEntity<>(linkAssembler.toModel(service.getEventTriggers(), EventTriggerDto.class), HttpStatus.OK);
     }
 
     @Transactional
     @GetMapping("/{name}")
-    public ResponseEntity<EntityModel<EventDto>> getEvent(@PathVariable String name) {
-        return new ResponseEntity<>(linkAssembler.toModel(service.getEvent(name), EventDto.class), HttpStatus.OK);
+    public ResponseEntity<EntityModel<EventTriggerDto>> getEventTrigger(@PathVariable String name) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.getEventTrigger(name), EventTriggerDto.class), HttpStatus.OK);
     }
 
     @Transactional
     @GetMapping("/{name}/quantum-applications")
-    public ResponseEntity<CollectionModel<EntityModel<QuantumApplicationDto>>> getEventApplications(@PathVariable String name) {
-        return new ResponseEntity<>(quantumApplicationLinkAssembler.toModel(service.getEventApplications(name), QuantumApplicationDto.class), HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<QuantumApplicationDto>>> getEventTriggerApplications(@PathVariable String name) {
+        return new ResponseEntity<>(quantumApplicationLinkAssembler.toModel(service.getEventTriggerApplications(name), QuantumApplicationDto.class), HttpStatus.OK);
     }
 
     @Transactional
     @PostMapping("/{name}/quantum-applications/{applicationName}")
-    public ResponseEntity<EntityModel<EventDto>> registerQuantumApplication(@PathVariable String name, @PathVariable String applicationName) {
-        return new ResponseEntity<>(linkAssembler.toModel(service.registerApplication(name, applicationName), EventDto.class), HttpStatus.OK);
+    public ResponseEntity<EntityModel<EventTriggerDto>> registerQuantumApplication(@PathVariable String name, @PathVariable String applicationName) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.registerApplication(name, applicationName), EventTriggerDto.class), HttpStatus.OK);
     }
 
     @Transactional
     @DeleteMapping("/{name}/quantum-applications/{applicationName}")
-    public ResponseEntity<EntityModel<EventDto>> unregisterQuantumApplication(@PathVariable String name, @PathVariable String applicationName) {
-        return new ResponseEntity<>(linkAssembler.toModel(service.unregisterApplication(name, applicationName), EventDto.class), HttpStatus.OK);
+    public ResponseEntity<EntityModel<EventTriggerDto>> unregisterQuantumApplication(@PathVariable String name, @PathVariable String applicationName) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.unregisterApplication(name, applicationName), EventTriggerDto.class), HttpStatus.OK);
     }
 
     @Transactional
     @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable String name) {
-        service.deleteEvent(name);
+    public ResponseEntity<Void> deleteEventTrigger(@PathVariable String name) {
+        service.deleteEventTrigger(name);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

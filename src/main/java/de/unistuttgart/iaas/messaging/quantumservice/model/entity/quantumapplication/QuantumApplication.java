@@ -6,12 +6,11 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.HasId;
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Event;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTrigger;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +30,7 @@ public class QuantumApplication extends HasId {
     private boolean executionEnabled;
 
     @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "quantumApplications")
-    private Set<Event> events = new HashSet<>();
+    private Set<EventTrigger> eventTriggers = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "quantumApplication")
     private Set<Job> jobs = new HashSet<>();

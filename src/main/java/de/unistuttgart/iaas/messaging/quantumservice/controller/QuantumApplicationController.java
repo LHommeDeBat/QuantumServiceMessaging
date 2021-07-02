@@ -1,9 +1,9 @@
 package de.unistuttgart.iaas.messaging.quantumservice.controller;
 
-import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventLinkAssembler;
+import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventTriggerLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.JobLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.QuantumApplicationLinkAssembler;
-import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventTriggerDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.JobDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.QuantumApplicationDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
@@ -37,7 +37,7 @@ public class QuantumApplicationController {
 
     private final QuantumApplicationService service;
     private final QuantumApplicationLinkAssembler linkAssembler;
-    private final EventLinkAssembler eventLinkAssembler;
+    private final EventTriggerLinkAssembler eventLinkAssembler;
     private final JobLinkAssembler jobLinkAssembler;
 
     @Transactional
@@ -74,9 +74,9 @@ public class QuantumApplicationController {
     }
 
     @Transactional
-    @GetMapping("/{name}/events")
-    public ResponseEntity<CollectionModel<EntityModel<EventDto>>> getQuantumApplicationEvents(@PathVariable String name) {
-        return new ResponseEntity<>(eventLinkAssembler.toModel(service.getQuantumApplicationEvents(name), EventDto.class), HttpStatus.OK);
+    @GetMapping("/{name}/event-triggers")
+    public ResponseEntity<CollectionModel<EntityModel<EventTriggerDto>>> getQuantumApplicationEventTriggers(@PathVariable String name) {
+        return new ResponseEntity<>(eventLinkAssembler.toModel(service.getQuantumApplicationEventTriggers(name), EventTriggerDto.class), HttpStatus.OK);
     }
 
     @Transactional

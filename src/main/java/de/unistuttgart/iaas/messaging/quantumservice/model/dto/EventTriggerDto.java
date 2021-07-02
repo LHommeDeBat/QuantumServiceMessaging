@@ -16,7 +16,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTyp
 import lombok.Data;
 
 @Data
-public class EventDto {
+public class EventTriggerDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
@@ -26,7 +26,7 @@ public class EventDto {
     private String name;
 
     @NotNull
-    private EventType type;
+    private EventType eventType;
 
     private Map<String, Integer> additionalProperties = new HashMap<>();
 }

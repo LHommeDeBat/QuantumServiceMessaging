@@ -23,13 +23,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Event extends HasId {
+public class EventTrigger extends HasId {
 
     @Column(unique = true)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private EventType type;
+    private EventType eventType;
 
     @ElementCollection
     private Map<String, Integer> additionalProperties = new HashMap<>();

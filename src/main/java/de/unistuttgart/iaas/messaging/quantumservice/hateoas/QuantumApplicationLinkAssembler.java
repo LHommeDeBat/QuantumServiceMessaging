@@ -15,7 +15,7 @@ public class QuantumApplicationLinkAssembler extends GenericLinkAssembler<Quantu
         resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplication(getName(resource))).withSelfRel());
         resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).downloadQuantumApplicationScript(getName(resource))).withRel("script"));
         resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).invokeQuantumApplication(getName(resource), null)).withRel("invoke"));
-        resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplicationEvents(getName(resource))).withRel("events"));
+        resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplicationEventTriggers(getName(resource))).withRel("eventTriggers"));
         resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplicationJobs(getName(resource))).withRel("jobs"));
     }
 
