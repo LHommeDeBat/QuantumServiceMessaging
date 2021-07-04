@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +18,8 @@ public class JobService {
 
     private final JobRepository repository;
 
-    public Page<Job> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Job> findAll(Set<JobStatus> statusFilter, Pageable pageable) {
+        return repository.findAll(statusFilter, pageable);
     }
 
     public Job findById(UUID id) {

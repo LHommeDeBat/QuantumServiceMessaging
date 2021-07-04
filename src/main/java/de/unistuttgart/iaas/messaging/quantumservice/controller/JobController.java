@@ -1,9 +1,11 @@
 package de.unistuttgart.iaas.messaging.quantumservice.controller;
 
+import java.util.Set;
 import java.util.UUID;
 
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.JobLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.JobDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
 import de.unistuttgart.iaas.messaging.quantumservice.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -29,8 +32,8 @@ public class JobController {
 
     @Transactional
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<JobDto>>> getJobs(Pageable pageable) {
-        return new ResponseEntity<>(linkAssembler.toModel(service.findAll(pageable), JobDto.class), HttpStatus.OK);
+    public ResponseEntity<PagedModel<EntityModel<JobDto>>> getJobs(@RequestParam(required = false) Set<JobStatus> statusFilter, Pageable pageable) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.findAll(statusFilter, pageable), JobDto.class), HttpStatus.OK);
     }
 
     @Transactional
