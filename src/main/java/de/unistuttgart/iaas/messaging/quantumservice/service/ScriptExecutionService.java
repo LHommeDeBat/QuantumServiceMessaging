@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +34,7 @@ public class ScriptExecutionService {
     @Transactional
     public void executeScript(QuantumApplication application, IBMQEventPayload eventPayload) {
         log.info("Executing application {} on device {}...", application.getName(), eventPayload.getDevice());
-        String[] command = generateCommand(application, eventPayload.getDevice());
+        String[] command = generateCommand(application, eventPayload.getDevice(), eventPayload.getAdditionalProperties());
         String executionPrint = null;
         ZonedDateTime scriptExecutionDate = ZonedDateTime.now();
 
@@ -44,6 +45,7 @@ public class ScriptExecutionService {
             String line;
             while ((line = reader.readLine()) != null) {
                 executionPrint = line;
+                log.info(line);
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
@@ -73,12 +75,19 @@ public class ScriptExecutionService {
         quantumApplicationRepository.save(application);
     }
 
-    private String[] generateCommand(QuantumApplication application, String ibmqDevice) {
+    private String[] generateCommand(QuantumApplication application, String ibmqDevice, Map<String, Object> eventProperties) {
         List<String> command = new ArrayList<>();
         command.add("python");
         command.add(application.getExecutionFilepath());
         command.add(ibmqProperties.getApiToken());
         command.add(ibmqDevice);
+
+        for (String parameter : application.getParameters().keySet()) {
+            Object parameterValue = eventProperties.get(parameter);
+            // TODO: Add event if parameters are missing
+            command.add(parameterValue.toString());
+        }
+
         return command.toArray(new String[0]);
     }
 }
