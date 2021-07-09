@@ -9,7 +9,6 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.ParameterType;
 import lombok.Data;
 
 @Data
@@ -22,7 +21,7 @@ public class QuantumApplicationDto {
     @NotBlank(message = "The name cannot be blank!")
     private String name;
 
-    private Map<String, ParameterType> parameters = new HashMap<>();
+    private Map<String, QuantumApplicationParameterDto> parameters = new HashMap<>();
 
     @JsonIgnore
     private String filepath;

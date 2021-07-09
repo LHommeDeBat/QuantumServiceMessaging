@@ -7,10 +7,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -30,9 +28,8 @@ public class QuantumApplication extends HasId {
     @Column(unique = true)
     private String name;
 
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
-    private Map<String, ParameterType> parameters = new HashMap<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Map<String, QuantumApplicationParameter> parameters = new HashMap<>();
 
     private String filepath;
     private String executionFilepath;

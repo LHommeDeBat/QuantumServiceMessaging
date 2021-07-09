@@ -125,7 +125,7 @@ public class QuantumApplicationService {
                     String parameter = iterator.next();
                     fw.write("    \"" + parameter + "\": ");
 
-                    switch (application.getParameters().get(parameter)) {
+                    switch (application.getParameters().get(parameter).getType()) {
                         case INTEGER:
                             fw.write("int(sys.argv[" + argvPosition + "])");
                             break;

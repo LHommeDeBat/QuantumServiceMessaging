@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,8 +85,11 @@ public class ScriptExecutionService {
 
         for (String parameter : application.getParameters().keySet()) {
             Object parameterValue = eventProperties.get(parameter);
-            // TODO: Add event if parameters are missing
-            command.add(parameterValue.toString());
+            if (Objects.isNull(parameterValue)) {
+                command.add(application.getParameters().get(parameter).getDefaultValue());
+            } else {
+                command.add(parameterValue.toString());
+            }
         }
 
         return command.toArray(new String[0]);
