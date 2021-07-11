@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +36,8 @@ public class ScriptExecutionService {
     @Transactional
     public void executeScript(QuantumApplication application, IBMQEventPayload eventPayload) {
         log.info("Executing application {} on device {}...", application.getName(), eventPayload.getDevice());
-        String[] command = generateCommand(application, eventPayload.getDevice(), eventPayload.getAdditionalProperties());
+        Map<String, String> usedParameters = new HashMap<>();
+        String[] command = generateCommand(application, eventPayload.getDevice(), eventPayload.getAdditionalProperties(), usedParameters);
         String executionPrint = null;
         ZonedDateTime scriptExecutionDate = ZonedDateTime.now();
 
@@ -70,13 +72,14 @@ public class ScriptExecutionService {
         job.setReplyTo(eventPayload.getReplyTo());
         job.setScriptExecutionDate(scriptExecutionDate);
         job.setQuantumApplication(application);
+        job.setUsedParameters(usedParameters);
 
         application.getJobs().add(job);
         application.setExecutionEnabled(false);
         quantumApplicationRepository.save(application);
     }
 
-    private String[] generateCommand(QuantumApplication application, String ibmqDevice, Map<String, Object> eventProperties) {
+    private String[] generateCommand(QuantumApplication application, String ibmqDevice, Map<String, Object> eventProperties, Map<String, String> usedParameters) {
         List<String> command = new ArrayList<>();
         command.add("python");
         command.add(application.getExecutionFilepath());
@@ -87,8 +90,10 @@ public class ScriptExecutionService {
             Object parameterValue = eventProperties.get(parameter);
             if (Objects.isNull(parameterValue)) {
                 command.add(application.getParameters().get(parameter).getDefaultValue());
+                usedParameters.put(parameter, application.getParameters().get(parameter).getDefaultValue());
             } else {
                 command.add(parameterValue.toString());
+                usedParameters.put(parameter, parameterValue.toString());
             }
         }
 

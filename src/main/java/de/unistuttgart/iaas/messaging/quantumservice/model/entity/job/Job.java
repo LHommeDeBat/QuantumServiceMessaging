@@ -1,9 +1,12 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.entity.job;
 
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -43,7 +46,9 @@ public class Job extends HasId {
 
     private Boolean success;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Map<String, String> usedParameters = new HashMap<>();
+
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private QuantumApplication quantumApplication;
-
 }
