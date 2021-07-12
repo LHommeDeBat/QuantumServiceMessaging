@@ -1,5 +1,7 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.dto;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -18,6 +20,8 @@ public class QuantumApplicationDto {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "The name can only contain letters and numbers!")
     @NotBlank(message = "The name cannot be blank!")
     private String name;
+
+    private Map<String, QuantumApplicationParameterDto> parameters = new HashMap<>();
 
     @JsonIgnore
     private String filepath;

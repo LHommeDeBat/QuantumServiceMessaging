@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTrigger;
@@ -113,6 +115,35 @@ public class QuantumApplicationService {
             fw.write("    \"apiToken\": sys.argv[1],");
             fw.write(System.lineSeparator());
             fw.write("    \"device\": sys.argv[2]");
+
+            if (!Objects.isNull(application.getParameters()) && !application.getParameters().isEmpty()) {
+                fw.write(",");
+                int argvPosition = 3;
+                Iterator<String> iterator = application.getParameters().keySet().iterator();
+                while (iterator.hasNext()) {
+                    fw.write(System.lineSeparator());
+                    String parameter = iterator.next();
+                    fw.write("    \"" + parameter + "\": ");
+
+                    switch (application.getParameters().get(parameter).getType()) {
+                        case INTEGER:
+                            fw.write("int(sys.argv[" + argvPosition + "])");
+                            break;
+                        case FLOAT:
+                            fw.write("float(sys.argv[" + argvPosition + "])");
+                            break;
+                        default:
+                            fw.write("sys.argv[" + argvPosition + "]");
+                            break;
+                    }
+
+                    if (iterator.hasNext()) {
+                        fw.write(",");
+                    }
+                    argvPosition++;
+                }
+            }
+
             fw.write(System.lineSeparator());
             fw.write("}");
             fw.write(System.lineSeparator());

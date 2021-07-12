@@ -16,7 +16,7 @@ public class JobLinkAssembler extends GenericLinkAssembler<JobDto> {
     @Override
     public void addLinks(EntityModel<JobDto> resource) {
         resource.add(WebMvcLinkBuilder.linkTo(methodOn(JobController.class).getJob(getId(resource))).withSelfRel());
-        resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplication(getQuantumApplicationName(resource))).withRel("quantum-application"));
+        resource.add(WebMvcLinkBuilder.linkTo(methodOn(QuantumApplicationController.class).getQuantumApplication(getQuantumApplicationName(resource))).withRel("quantumApplication"));
     }
 
     private String getQuantumApplicationName(EntityModel<JobDto> resource) {

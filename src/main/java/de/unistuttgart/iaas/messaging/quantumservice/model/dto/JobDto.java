@@ -1,6 +1,8 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.dto;
 
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,6 +21,8 @@ public class JobDto {
     private ZonedDateTime creationDate;
     private ZonedDateTime endDate;
     private Boolean success;
+
+    private Map<String, String> usedParameters = new HashMap<>();
 
     @JsonIgnore
     private QuantumApplicationDto quantumApplication;

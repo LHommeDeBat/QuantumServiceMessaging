@@ -5,6 +5,7 @@ public enum JobStatus {
     CREATED,
     VALIDATING,
     VALIDATED,
+    QUEUED,
     RUNNING,
     COMPLETED
 }
