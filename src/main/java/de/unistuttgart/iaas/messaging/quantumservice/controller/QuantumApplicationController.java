@@ -3,7 +3,7 @@ package de.unistuttgart.iaas.messaging.quantumservice.controller;
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.EventTriggerLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.JobLinkAssembler;
 import de.unistuttgart.iaas.messaging.quantumservice.hateoas.QuantumApplicationLinkAssembler;
-import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventTriggerDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.event.EventTriggerDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.JobDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.QuantumApplicationDto;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;

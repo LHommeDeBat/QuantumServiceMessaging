@@ -1,20 +1,19 @@
-package de.unistuttgart.iaas.messaging.quantumservice.model.dto;
+package de.unistuttgart.iaas.messaging.quantumservice.model.dto.event;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
 import lombok.Data;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "eventType", visible = true)
+@JsonSubTypes( {@JsonSubTypes.Type(value = ExecutionResultEventTriggerDto.class, name = "EXECUTION_RESULT"), @JsonSubTypes.Type(value = QueueSizeEventTriggerDto.class, name = "QUEUE_SIZE")})
 @Data
 public class EventTriggerDto {
 
@@ -27,6 +26,4 @@ public class EventTriggerDto {
 
     @NotNull
     private EventType eventType;
-
-    private Map<String, Integer> additionalProperties = new HashMap<>();
 }

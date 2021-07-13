@@ -9,6 +9,7 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.event.ExecutionResultEventTriggerDto;
 import lombok.Data;
 
 @Data
@@ -22,6 +23,9 @@ public class QuantumApplicationDto {
     private String name;
 
     private Map<String, QuantumApplicationParameterDto> parameters = new HashMap<>();
+
+    @JsonIgnore
+    private ExecutionResultEventTriggerDto executionResultEventTrigger;
 
     @JsonIgnore
     private String filepath;

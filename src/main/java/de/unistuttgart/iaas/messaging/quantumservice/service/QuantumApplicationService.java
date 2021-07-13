@@ -73,6 +73,12 @@ public class QuantumApplicationService {
         return repository.findQuantumApplicationJobs(name);
     }
 
+    public void unlinkExecutionResultEventTrigger(String name) {
+        QuantumApplication existingQuantumApplication = getQuantumApplication(name);
+        existingQuantumApplication.setExecutionResultEventTrigger(null);
+        repository.save(existingQuantumApplication);
+    }
+
     public void deleteQuantumApplication(String name) {
         QuantumApplication existingQuantumApplication = getQuantumApplication(name);
 

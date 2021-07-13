@@ -1,7 +1,7 @@
 package de.unistuttgart.iaas.messaging.quantumservice.hateoas;
 
 import de.unistuttgart.iaas.messaging.quantumservice.controller.EventTriggerController;
-import de.unistuttgart.iaas.messaging.quantumservice.model.dto.EventTriggerDto;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.event.EventTriggerDto;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;

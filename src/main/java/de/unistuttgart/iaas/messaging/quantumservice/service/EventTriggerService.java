@@ -6,6 +6,7 @@ import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTrigger;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventTriggerRepository;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.ExecutionResultEventTrigger;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,11 @@ public class EventTriggerService {
     }
 
     public EventTrigger createEventTrigger(EventTrigger eventTrigger) {
+        if (eventTrigger instanceof ExecutionResultEventTrigger) {
+            ExecutionResultEventTrigger executionResultEventTrigger = (ExecutionResultEventTrigger) eventTrigger;
+            executionResultEventTrigger.setExecutedApplication(applicationService.getQuantumApplication(executionResultEventTrigger.getExecutedApplication().getName()));
+            return repository.save(executionResultEventTrigger);
+        }
         return repository.save(eventTrigger);
     }
 
@@ -47,6 +53,10 @@ public class EventTriggerService {
         // Unregister all applications
         existingEventTrigger.setQuantumApplications(new HashSet<>());
         existingEventTrigger = repository.save(existingEventTrigger);
+
+        if (existingEventTrigger instanceof ExecutionResultEventTrigger) {
+            applicationService.unlinkExecutionResultEventTrigger(((ExecutionResultEventTrigger) existingEventTrigger).getExecutedApplication().getName());
+        }
 
         // Delete Event
         repository.delete(existingEventTrigger);
