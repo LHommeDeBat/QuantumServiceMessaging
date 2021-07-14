@@ -25,15 +25,15 @@ public interface EventTriggerRepository extends CrudRepository<EventTrigger, UUI
     @Query("SELECT qa FROM QueueSizeEventTrigger e JOIN e.quantumApplications qa WHERE e.eventType = 'QUEUE_SIZE' AND e.queueSize >= :queueSize AND qa.executionEnabled = TRUE")
     Set<QuantumApplication> findApplicationByQueueSizeEvent(@Param("queueSize") Integer queueSize);
 
-    @Query("SELECT qa FROM ExecutionResultEventTrigger e JOIN e.quantumApplications qa JOIN e.executedApplication ea WHERE e.eventType = 'EXECUTION_RESULT' AND ea.id = :applicationId AND qa.executionEnabled = TRUE")
-    Set<QuantumApplication> findApplicationByExecutionResultEvent(@Param("applicationId") UUID applicationId);
+    @Query("SELECT qa FROM ExecutionResultEventTrigger e JOIN e.quantumApplications qa JOIN e.executedApplication ea WHERE e.eventType = 'EXECUTION_RESULT' AND ea.name = :applicationName AND qa.executionEnabled = TRUE")
+    Set<QuantumApplication> findApplicationByExecutionResultEvent(@Param("applicationName") String applicationName);
 
     default Set<QuantumApplication> findByEventData(IBMQEventPayload eventPayload) {
         switch (eventPayload.getEventType()) {
             case QUEUE_SIZE:
                 return findApplicationByQueueSizeEvent((Integer) eventPayload.getAdditionalProperties().get("queueSize"));
             case EXECUTION_RESULT:
-                return findApplicationByExecutionResultEvent(UUID.fromString(eventPayload.getAdditionalProperties().get("executedApplication").toString()));
+                return findApplicationByExecutionResultEvent(eventPayload.getAdditionalProperties().get("executedApplication").toString());
             default:
                 return new HashSet<>();
         }
