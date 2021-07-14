@@ -18,9 +18,19 @@ public interface QuantumApplicationRepository extends CrudRepository<QuantumAppl
 
     Set<QuantumApplication> findAll();
 
+    Set<QuantumApplication> findByExecutionResultEventTriggerIsNull();
+
     @Query("SELECT e FROM QuantumApplication qa JOIN qa.eventTriggers e WHERE qa.name = :name")
     Set<EventTrigger> findQuantumApplicationEventTriggers(@Param("name") String name);
 
     @Query("SELECT j FROM QuantumApplication qa JOIN qa.jobs j WHERE qa.name = :name")
     Set<Job> findQuantumApplicationJobs(@Param("name") String name);
+
+    default Set<QuantumApplication> findAll(boolean noResultEventOnly) {
+        if (noResultEventOnly) {
+            return findByExecutionResultEventTriggerIsNull();
+        }
+
+        return findAll();
+    }
 }

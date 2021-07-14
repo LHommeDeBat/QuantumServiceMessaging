@@ -57,8 +57,8 @@ public class QuantumApplicationService {
         }
     }
 
-    public Set<QuantumApplication> getQuantumApplications() {
-        return repository.findAll();
+    public Set<QuantumApplication> getQuantumApplications(boolean noResultEventOnly) {
+        return repository.findAll(noResultEventOnly);
     }
 
     public QuantumApplication getQuantumApplication(String name) {

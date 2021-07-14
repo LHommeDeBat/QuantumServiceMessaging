@@ -63,8 +63,8 @@ public class QuantumApplicationController {
 
     @Transactional
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<QuantumApplicationDto>>> getQuantumApplications() {
-        return new ResponseEntity<>(linkAssembler.toModel(service.getQuantumApplications(), QuantumApplicationDto.class), HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<QuantumApplicationDto>>> getQuantumApplications(@RequestParam(required = false) boolean noResultEventOnly) {
+        return new ResponseEntity<>(linkAssembler.toModel(service.getQuantumApplications(noResultEventOnly), QuantumApplicationDto.class), HttpStatus.OK);
     }
 
     @Transactional
