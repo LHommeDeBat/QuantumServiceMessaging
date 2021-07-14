@@ -11,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.unistuttgart.iaas.messaging.quantumservice.model.dto.event.ExecutionResultEventTriggerDto;
 import lombok.Data;
+import org.springframework.hateoas.server.core.Relation;
 
+@Relation(collectionRelation = "quantumApplications", itemRelation = "quantumApplication")
 @Data
 public class QuantumApplicationDto {
 

@@ -11,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
 import lombok.Data;
+import org.springframework.hateoas.server.core.Relation;
 
+@Relation(collectionRelation = "eventTriggers", itemRelation = "eventTrigger")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "eventType", visible = true)
 @JsonSubTypes( {@JsonSubTypes.Type(value = ExecutionResultEventTriggerDto.class, name = "EXECUTION_RESULT"), @JsonSubTypes.Type(value = QueueSizeEventTriggerDto.class, name = "QUEUE_SIZE")})
 @Data

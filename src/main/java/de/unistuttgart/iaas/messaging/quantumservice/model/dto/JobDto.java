@@ -8,7 +8,9 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
 import lombok.Data;
+import org.springframework.hateoas.server.core.Relation;
 
+@Relation(collectionRelation = "jobs", itemRelation = "job")
 @Data
 public class JobDto {
 
