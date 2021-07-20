@@ -57,8 +57,8 @@ public class QuantumApplicationService {
         }
     }
 
-    public Set<QuantumApplication> getQuantumApplications() {
-        return repository.findAll();
+    public Set<QuantumApplication> getQuantumApplications(boolean noResultEventOnly) {
+        return repository.findAll(noResultEventOnly);
     }
 
     public QuantumApplication getQuantumApplication(String name) {
@@ -71,6 +71,12 @@ public class QuantumApplicationService {
 
     public Set<Job> getQuantumApplicationJobs(String name) {
         return repository.findQuantumApplicationJobs(name);
+    }
+
+    public void unlinkExecutionResultEventTrigger(String name) {
+        QuantumApplication existingQuantumApplication = getQuantumApplication(name);
+        existingQuantumApplication.setExecutionResultEventTrigger(null);
+        repository.save(existingQuantumApplication);
     }
 
     public void deleteQuantumApplication(String name) {

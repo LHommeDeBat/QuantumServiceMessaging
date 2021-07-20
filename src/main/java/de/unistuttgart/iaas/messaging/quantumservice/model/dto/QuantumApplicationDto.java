@@ -9,8 +9,11 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.unistuttgart.iaas.messaging.quantumservice.model.dto.event.ExecutionResultEventTriggerDto;
 import lombok.Data;
+import org.springframework.hateoas.server.core.Relation;
 
+@Relation(collectionRelation = "quantumApplications", itemRelation = "quantumApplication")
 @Data
 public class QuantumApplicationDto {
 
@@ -22,6 +25,9 @@ public class QuantumApplicationDto {
     private String name;
 
     private Map<String, QuantumApplicationParameterDto> parameters = new HashMap<>();
+
+    @JsonIgnore
+    private ExecutionResultEventTriggerDto executionResultEventTrigger;
 
     @JsonIgnore
     private String filepath;

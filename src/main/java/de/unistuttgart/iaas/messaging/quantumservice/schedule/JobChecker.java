@@ -12,6 +12,7 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplica
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,9 @@ public class JobChecker {
                 runningJob.setResult(ibmqClient.getJobResult("ibm-q", "open", "main", runningJob.getIbmqId()));
                 runningJob.setSuccess(ibmqJob.getSummaryData().getSuccess());
 
-                jobResultSender.sendJobResult(runningJob.getResult(), runningJob.getReplyTo());
+                JSONObject result = runningJob.getResult();
+                result.put("executedApplication", runningJob.getQuantumApplication().getName());
+                jobResultSender.sendJobResult(result, runningJob.getReplyTo());
             }
 
             runningJob = jobRepository.save(runningJob);

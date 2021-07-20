@@ -1,13 +1,10 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.entity.event;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,9 +27,6 @@ public class EventTrigger extends HasId {
 
     @Enumerated(EnumType.STRING)
     private EventType eventType;
-
-    @ElementCollection
-    private Map<String, Integer> additionalProperties = new HashMap<>();
 
     @ManyToMany(cascade = CascadeType.MERGE)
     private Set<QuantumApplication> quantumApplications = new HashSet<>();
