@@ -24,6 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * This class is responsible for executing the scripts of Quantum-Applications.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,6 +40,7 @@ public class ScriptExecutionService {
     public void executeScript(QuantumApplication application, IBMQEventPayload eventPayload) {
         log.info("Executing application {} on device {}...", application.getName(), eventPayload.getDevice());
         Map<String, String> usedParameters = new HashMap<>();
+        // Generate the Python CLI-Command for executing the script
         String[] command = generateCommand(application, eventPayload.getDevice(), eventPayload.getAdditionalProperties(), usedParameters);
         String executionPrint = null;
         ZonedDateTime scriptExecutionDate = ZonedDateTime.now();
@@ -79,15 +83,28 @@ public class ScriptExecutionService {
         quantumApplicationRepository.save(application);
     }
 
+    /**
+     * This method generates the Python CLI-Command for running the correct script with correct arguments/parameters.
+     * (Example: python someFilename.py argument1 argument2 argument3)
+     *
+     * @param application
+     * @param ibmqDevice
+     * @param eventProperties
+     * @param usedParameters
+     * @return commandAsArray
+     */
     private String[] generateCommand(QuantumApplication application, String ibmqDevice, Map<String, Object> eventProperties, Map<String, String> usedParameters) {
         List<String> command = new ArrayList<>();
+        // Required stuff that is the same for each Quantum-Application
         command.add("python");
         command.add(application.getExecutionFilepath());
         command.add(ibmqProperties.getApiToken());
         command.add(ibmqDevice);
 
+        // Add optional parameters that are different for each Quantum-Application
         for (String parameter : application.getParameters().keySet()) {
             Object parameterValue = eventProperties.get(parameter);
+            // If Event does not provide parameter use stored default value
             if (Objects.isNull(parameterValue)) {
                 command.add(application.getParameters().get(parameter).getDefaultValue());
                 usedParameters.put(parameter, application.getParameters().get(parameter).getDefaultValue());

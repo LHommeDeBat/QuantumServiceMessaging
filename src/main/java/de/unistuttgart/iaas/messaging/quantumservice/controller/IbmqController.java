@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This class represents the represents the REST-Controller of the IBMQ-Jobs. It handles all incoming REST-Requests
+ * that involve contacting the IBMQ-API.
+ */
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value = "ibmq")
@@ -20,6 +24,11 @@ public class IbmqController {
 
     private final IbmqService service;
 
+    /**
+     * This REST-Endpoint returns all available IBMQ-Devices.
+     *
+     * @return ibmqDevices
+     */
     @Transactional
     @GetMapping("/devices")
     public ResponseEntity<Set<String>> getAvailableIbmqDevices() {

@@ -18,6 +18,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * This class represents a global ErrorHandler that handles exceptions that occur within the RestControllers.
+ * It catches all thrown exceptions and generates an appropriate ResponseEntity and returns it to the caller.
+ */
 @ControllerAdvice
 public class RestErrorHandler {
 

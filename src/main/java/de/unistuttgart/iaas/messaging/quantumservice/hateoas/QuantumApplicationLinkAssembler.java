@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * This class is used for adding HATEOAS-Links to Quantum-Application DTOs.
+ */
 @Component
 public class QuantumApplicationLinkAssembler extends GenericLinkAssembler<QuantumApplicationDto> {
     @Override
