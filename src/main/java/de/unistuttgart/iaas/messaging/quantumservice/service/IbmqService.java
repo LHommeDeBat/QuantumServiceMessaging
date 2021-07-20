@@ -1,9 +1,7 @@
 package de.unistuttgart.iaas.messaging.quantumservice.service;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.api.IBMQClient;
@@ -14,16 +12,25 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * This is a Service-Class performing operations on the IBMQ-API.
+ */
 @Service
 @RequiredArgsConstructor
 public class IbmqService {
 
     private final IBMQClient ibmqClient;
 
+    /**
+     * This method uses the IBMQClient to retrieve all available devices.
+     *
+     * @return availableDevices
+     */
     public Set<String> getAvailableIbmqDevices() {
         Set<String> availableDevices = new HashSet<>();
         List<Hub> hubs = ibmqClient.getNetworks();
 
+        // Collect all devices from all projects, groups and hubs
         for (Hub hub: hubs) {
             for (Group group: hub.getGroups().values()) {
                 for (Project project: group.getProjects().values()) {

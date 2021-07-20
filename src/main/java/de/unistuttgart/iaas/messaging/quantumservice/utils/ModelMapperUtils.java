@@ -8,6 +8,9 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.Executio
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.QueueSizeEventTrigger;
 import org.modelmapper.ModelMapper;
 
+/**
+ * This Utility-Class is used to convert between different types of objects (Entity <-> DTO).
+ */
 public class ModelMapperUtils {
 
     public static final ModelMapper mapper = initModelMapper();
@@ -16,6 +19,11 @@ public class ModelMapperUtils {
         return mapper.map(entity, outClass);
     }
 
+    /**
+     * This method configures the ModelMapper to correctly convert between Child-Objects ot the Event-Trigger.
+     * 
+     * @param mapper
+     */
     private static void initializeConverters(ModelMapper mapper) {
         mapper.createTypeMap(QueueSizeEventTrigger.class, EventTriggerDto.class)
                 .setConverter(mappingContext -> mapper.map(mappingContext.getSource(), QueueSizeEventTriggerDto.class));

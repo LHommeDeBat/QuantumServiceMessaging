@@ -27,6 +27,11 @@ public class JobChecker {
     private final QuantumApplicationRepository quantumApplicationRepository;
     private final JobResultSender jobResultSender;
 
+    /**
+     * This method is performed on a schedule. It checks all IBMQ-Jobs that are currently running and updates their
+     * status. It also retrieves the results of completed jobs from the IBMQ-Servers and forwards them to the defined
+     * Reply-To destination of the job for further processing.
+     */
     @Transactional
     @Scheduled(initialDelay = 5000, fixedDelay = 10000)
     public void checkJobStatus() {
@@ -37,19 +42,21 @@ public class JobChecker {
             runningJob.setStatus(JobStatus.valueOf(ibmqJob.getStatus()));
             runningJob.setCreationDate(ibmqJob.getCreationDate());
 
+            // Get result of completed jobs
             if (ibmqJob.getStatus().equals("COMPLETED")) {
                 runningJob.setEndDate(ibmqJob.getEndDate());
                 runningJob.setResult(ibmqClient.getJobResult("ibm-q", "open", "main", runningJob.getIbmqId()));
                 runningJob.setSuccess(ibmqJob.getSummaryData().getSuccess());
 
                 JSONObject result = runningJob.getResult();
+                // Enhance job with further metadata and send it to defined Reply-To-Address
                 result.put("executedApplication", runningJob.getQuantumApplication().getName());
                 jobResultSender.sendJobResult(result, runningJob.getReplyTo());
             }
 
             runningJob = jobRepository.save(runningJob);
 
-            // If Job completed -> activate execution of Application
+            // The application of the running job can be reactivated for repeated processing
             if (runningJob.getStatus() == JobStatus.COMPLETED) {
                 QuantumApplication jobApplication = runningJob.getQuantumApplication();
                 log.info("Reactivating appliaction '{}' after successfully executed job...", jobApplication.getName());

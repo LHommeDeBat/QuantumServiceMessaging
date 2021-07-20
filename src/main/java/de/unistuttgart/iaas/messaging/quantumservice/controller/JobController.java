@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This class represents the represents the REST-Controller of the Jobs. It handles all incoming REST-Requests
+ * for the Jobs.
+ */
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value = "jobs")
@@ -30,12 +34,26 @@ public class JobController {
     private final JobLinkAssembler linkAssembler;
     private final JobService service;
 
+    /**
+     * This REST-Endpoint returns all existing Jobs in a paginated manner. Optional parameters allow further filtering
+     * of the result.
+     *
+     * @param statusFilter
+     * @param pageable
+     * @return jobs
+     */
     @Transactional
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<JobDto>>> getJobs(@RequestParam(required = false) Set<JobStatus> statusFilter, Pageable pageable) {
         return new ResponseEntity<>(linkAssembler.toModel(service.findAll(statusFilter, pageable), JobDto.class), HttpStatus.OK);
     }
 
+    /**
+     * This REST-Endpoint returns a specific job using it's unique ID.
+     *
+     * @param id
+     * @return job
+     */
     @Transactional
     @GetMapping(value = "/{id}")
     public ResponseEntity<EntityModel<JobDto>> getJob(@PathVariable UUID id) {

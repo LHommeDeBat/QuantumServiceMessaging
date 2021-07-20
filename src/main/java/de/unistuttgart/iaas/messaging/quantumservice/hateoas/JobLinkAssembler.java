@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * This class is used for adding HATEOAS-Links to Job DTOs.
+ */
 @Component
 public class JobLinkAssembler extends GenericLinkAssembler<JobDto> {
     @Override
