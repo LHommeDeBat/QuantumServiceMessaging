@@ -2,6 +2,7 @@ package de.unistuttgart.iaas.messaging.quantumservice.model.dto;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ public class JobDto {
     private ZonedDateTime creationDate;
     private ZonedDateTime endDate;
     private Boolean success;
+    private List<String> errorLogs;
 
     private Map<String, String> usedParameters = new HashMap<>();
 

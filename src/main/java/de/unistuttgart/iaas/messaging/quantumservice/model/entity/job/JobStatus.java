@@ -7,5 +7,6 @@ public enum JobStatus {
     VALIDATED,
     QUEUED,
     RUNNING,
-    COMPLETED
+    COMPLETED,
+    FAILED
 }

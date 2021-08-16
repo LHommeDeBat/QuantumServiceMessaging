@@ -1,5 +1,7 @@
 package de.unistuttgart.iaas.messaging.quantumservice.model.entity.job;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -14,10 +16,10 @@ public interface JobRepository extends CrudRepository<Job, UUID> {
     Optional<Job> findById(UUID id);
     Page<Job> findAll(Pageable pageable);
     Page<Job> findByStatusIn(Set<JobStatus> statusFilter, Pageable pageable);
-    Set<Job> findByStatusNot(JobStatus status);
+    Set<Job> findByStatusNotIn(Set<JobStatus> statuss);
 
     default Set<Job> findRunningJobs() {
-        return findByStatusNot(JobStatus.COMPLETED);
+        return findByStatusNotIn(new HashSet<>(Arrays.asList(JobStatus.COMPLETED, JobStatus.FAILED)));
     }
 
     default Page<Job> findAll(Set<JobStatus> statusFilter, Pageable pageable) {
