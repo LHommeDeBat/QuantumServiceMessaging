@@ -71,7 +71,7 @@ public class ScriptExecutionService {
         // Create running Job
         Job job = new Job();
         job.setIbmqId(result.getJobId());
-        job.setStatus(JobStatus.CREATED);
+        job.setStatus(JobStatus.CREATING);
         job.setDevice(eventPayload.getDevice());
         job.setReplyTo(eventPayload.getReplyTo());
         job.setScriptExecutionDate(scriptExecutionDate);

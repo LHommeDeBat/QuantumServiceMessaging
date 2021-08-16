@@ -13,8 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.HasId;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
@@ -59,7 +57,7 @@ public class Job extends HasId {
 
     public void setStatusDetails(Map<String, ZonedDateTime> timePerStep) {
         for (String statusString : timePerStep.keySet()) {
-            if (!statusDetails.containsKey(statusString)) {
+            if (statusDetails.get(JobStatus.valueOf(statusString)) == null) {
                 statusDetails.put(JobStatus.valueOf(statusString), new JobStatusDetails(timePerStep.get(statusString), false));
             }
         }

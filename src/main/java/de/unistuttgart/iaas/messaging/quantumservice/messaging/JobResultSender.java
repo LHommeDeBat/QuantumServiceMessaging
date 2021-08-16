@@ -24,7 +24,6 @@ public class JobResultSender {
      * @param job Job that is checked for status changes
      */
     public void sendJobStatusReachedEvent(Job job) {
-        log.info("Sending Job-Result...");
         for (JobStatus status : JobStatus.values()) {
             if (job.getStatusDetails().get(status) != null && !job.getStatusDetails().get(status).isStatusEventSent()) {
                 jmsTemplate.convertAndSend(job.getReplyTo(), createEventAsJson(job, status).toString());
