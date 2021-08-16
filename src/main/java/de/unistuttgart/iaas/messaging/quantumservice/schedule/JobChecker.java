@@ -12,7 +12,6 @@ import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplica
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +38,7 @@ public class JobChecker {
         log.info("Checking " + runningJobs.size() + " running jobs...");
         for (Job runningJob : runningJobs) {
             IBMQJob ibmqJob = ibmqClient.getJob("ibm-q", "open", "main", runningJob.getIbmqId());
+            runningJob.setStatusDetails(ibmqJob.getTimePerStep());
             runningJob.setStatus(JobStatus.valueOf(ibmqJob.getStatus()));
             runningJob.setCreationDate(ibmqJob.getCreationDate());
 
@@ -47,19 +47,17 @@ public class JobChecker {
                 runningJob.setEndDate(ibmqJob.getEndDate());
                 runningJob.setResult(ibmqClient.getJobResult("ibm-q", "open", "main", runningJob.getIbmqId()));
                 runningJob.setSuccess(ibmqJob.getSummaryData().getSuccess());
-
-                JSONObject result = runningJob.getResult();
-                // Enhance job with further metadata and send it to defined Reply-To-Address
-                result.put("executedApplication", runningJob.getQuantumApplication().getName());
-                jobResultSender.sendJobResult(result, runningJob.getReplyTo());
             }
+
+            // Send job status changed event
+            jobResultSender.sendJobStatusReachedEvent(runningJob);
 
             runningJob = jobRepository.save(runningJob);
 
-            // The application of the running job can be reactivated for repeated processing
+            // Reactivate application so it can be executed again after completion
             if (runningJob.getStatus() == JobStatus.COMPLETED) {
                 QuantumApplication jobApplication = runningJob.getQuantumApplication();
-                log.info("Reactivating appliaction '{}' after successfully executed job...", jobApplication.getName());
+                log.info("Reactivating application '{}' after successfully executed job...", jobApplication.getName());
                 jobApplication.setExecutionEnabled(true);
                 quantumApplicationRepository.save(jobApplication);
             }

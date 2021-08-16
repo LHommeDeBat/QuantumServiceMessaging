@@ -13,6 +13,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.HasId;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
@@ -31,6 +33,9 @@ public class Job extends HasId {
 
     @Enumerated(EnumType.STRING)
     private JobStatus status;
+
+    @ElementCollection
+    private Map<JobStatus, JobStatusDetails> statusDetails = new HashMap<>();
 
     private String device;
 
@@ -51,4 +56,12 @@ public class Job extends HasId {
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private QuantumApplication quantumApplication;
+
+    public void setStatusDetails(Map<String, ZonedDateTime> timePerStep) {
+        for (String statusString : timePerStep.keySet()) {
+            if (!statusDetails.containsKey(statusString)) {
+                statusDetails.put(JobStatus.valueOf(statusString), new JobStatusDetails(timePerStep.get(statusString), false));
+            }
+        }
+    }
 }
