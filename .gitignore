@@ -35,3 +35,5 @@ build/
 
 ### Python-Scripts ###
 actions/
+
+docker-compose.yml

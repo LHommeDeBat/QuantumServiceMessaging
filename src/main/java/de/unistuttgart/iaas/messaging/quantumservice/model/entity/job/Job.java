@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -49,10 +50,13 @@ public class Job extends HasId {
     private ZonedDateTime endDate;
 
     private Boolean success;
+
     @ElementCollection
+    @Column(length=999999999)
     private List<String> errorLogs;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Column(length=999999999)
     private Map<String, String> usedParameters = new HashMap<>();
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)

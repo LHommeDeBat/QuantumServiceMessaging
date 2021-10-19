@@ -3,13 +3,15 @@ package de.unistuttgart.iaas.messaging.quantumservice.schedule;
 import java.util.Set;
 
 import de.unistuttgart.iaas.messaging.quantumservice.api.IBMQClient;
-import de.unistuttgart.iaas.messaging.quantumservice.messaging.JobResultSender;
+import de.unistuttgart.iaas.messaging.quantumservice.model.entity.event.EventType;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.Job;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobRepository;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.job.JobStatus;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplication;
 import de.unistuttgart.iaas.messaging.quantumservice.model.entity.quantumapplication.QuantumApplicationRepository;
+import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQEventPayload;
 import de.unistuttgart.iaas.messaging.quantumservice.model.ibmq.IBMQJob;
+import de.unistuttgart.iaas.messaging.quantumservice.service.EventProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +26,7 @@ public class JobChecker {
     private final IBMQClient ibmqClient;
     private final JobRepository jobRepository;
     private final QuantumApplicationRepository quantumApplicationRepository;
-    private final JobResultSender jobResultSender;
+    private final EventProcessor eventProcessor;
 
     /**
      * This method is performed on a schedule. It checks all IBMQ-Jobs that are currently running and updates their
@@ -49,9 +51,6 @@ public class JobChecker {
                 runningJob.setSuccess(ibmqJob.getSummaryData().getSuccess());
             }
 
-            // Send job status changed event
-            jobResultSender.sendJobStatusReachedEvent(runningJob);
-
             runningJob = jobRepository.save(runningJob);
 
             // Reactivate application so it can be executed again after completion
@@ -60,7 +59,17 @@ public class JobChecker {
                 log.info("Reactivating application '{}' after successfully executed job...", jobApplication.getName());
                 jobApplication.setExecutionEnabled(true);
                 quantumApplicationRepository.save(jobApplication);
+                emitJobResultEvent(runningJob);
             }
         }
+    }
+
+    private void emitJobResultEvent(Job job) {
+        IBMQEventPayload eventPayload = new IBMQEventPayload();
+        eventPayload.setEventType(EventType.EXECUTION_RESULT);
+        eventPayload.setDevice(job.getDevice());
+        eventPayload.addAdditionalProperty("executedApplication", job.getQuantumApplication().getName());
+        eventPayload.addAdditionalProperty("result", job.getResult().toString());
+        eventProcessor.processEvent(eventPayload);
     }
 }

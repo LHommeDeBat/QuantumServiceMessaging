@@ -1,9 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/quantum_service_messaging_db?verifyServerCertificate=false&useSSL=true&createDatabaseIfNotExist=true&serverTimezone=UTC
-    username: root
-    password: root
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: update
