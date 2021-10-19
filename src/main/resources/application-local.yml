@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/quantum_service_filesystem_db?verifyServerCertificate=false&useSSL=true&createDatabaseIfNotExist=true&serverTimezone=UTC
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:9025}/quantum_service_filesystem_db?verifyServerCertificate=false&useSSL=true&createDatabaseIfNotExist=true&serverTimezone=UTC
     username: root
     password: root
   jpa:

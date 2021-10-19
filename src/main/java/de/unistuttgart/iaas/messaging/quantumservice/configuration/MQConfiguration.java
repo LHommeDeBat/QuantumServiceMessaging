@@ -7,12 +7,10 @@ import javax.jms.MessageConsumer;
 import javax.jms.Queue;
 import javax.jms.Session;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 import com.ibm.msg.client.wmq.WMQConstants;
 import de.unistuttgart.iaas.messaging.quantumservice.messaging.EventReceiver;
 import de.unistuttgart.iaas.messaging.quantumservice.service.EventProcessor;
-import de.unistuttgart.iaas.messaging.quantumservice.service.EventTriggerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -48,9 +46,6 @@ public class MQConfiguration {
     @Value("${messaging.eventQueue}")
     private String eventQueue;
 
-    private final IBMQProperties ibmqProperties;
-    private final EventTriggerService eventTriggerService;
-    private final ObjectMapper objectMapper;
     private final EventProcessor eventProcessor;
 
     @Bean
@@ -90,7 +85,7 @@ public class MQConfiguration {
     @Bean
     public MessageConsumer mqMessageConsumer(Session mqSession, Queue eventQueue) throws JMSException {
         MessageConsumer mqMessageConsumer = mqSession.createConsumer(eventQueue);
-        mqMessageConsumer.setMessageListener(new EventReceiver(eventProcessor, ibmqProperties, eventTriggerService, objectMapper));
+        mqMessageConsumer.setMessageListener(new EventReceiver(eventProcessor));
         return mqMessageConsumer;
     }
 }
