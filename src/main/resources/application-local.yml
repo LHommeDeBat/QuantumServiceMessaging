@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/quantum_service_filesystem_db?verifyServerCertificate=false&useSSL=true&createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: root
+    password: root
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+ibm:
+  mq:
+    queueManager: ${IBM_MQ_QUEUE_MANAGER:QM1}
+    channel: ${IBM_MQ_CHANNEL:DEV.ADMIN.SVRCONN}
+    host: ${IBM_MQ_HOST:localhost}
+    port: ${IBM_MQ_PORT:1414}
+    user: ${IBM_MQ_USER:admin}
+    password: ${IBM_MQ_PASSWORD:passw0rd}
+
+messaging:
+  enabled: ${MESSAGING_ENABLED:true}
+  eventQueue: ${MESSAGING_EVENT_QUEUE:DEV.QUEUE.1}
