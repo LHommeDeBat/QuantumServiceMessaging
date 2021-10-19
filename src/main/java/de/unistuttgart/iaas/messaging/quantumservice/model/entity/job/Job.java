@@ -2,6 +2,7 @@ package de.unistuttgart.iaas.messaging.quantumservice.model.entity.job;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
@@ -32,6 +33,9 @@ public class Job extends HasId {
     @Enumerated(EnumType.STRING)
     private JobStatus status;
 
+    @ElementCollection
+    private Map<JobStatus, JobStatusDetails> statusDetails = new HashMap<>();
+
     private String device;
 
     @Lob
@@ -45,10 +49,24 @@ public class Job extends HasId {
     private ZonedDateTime endDate;
 
     private Boolean success;
+    @ElementCollection
+    private List<String> errorLogs;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, String> usedParameters = new HashMap<>();
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private QuantumApplication quantumApplication;
+
+    public void setStatusDetails(Map<String, ZonedDateTime> timePerStep) {
+        for (String statusString : timePerStep.keySet()) {
+            if (statusDetails.get(JobStatus.valueOf(statusString)) == null) {
+                statusDetails.put(JobStatus.valueOf(statusString), new JobStatusDetails(timePerStep.get(statusString), false));
+            }
+        }
+    }
+
+    public void addStatusDetail(JobStatus status, JobStatusDetails detail) {
+        statusDetails.put(status, detail);
+    }
 }
