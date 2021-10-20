@@ -80,6 +80,8 @@ def main(params):
     }
 ```
 
+The creation of the quantum application will not only create a database entry but also store the python files to disk inside a **actions**-folder, from where they can be executed using the Python-CLI.
+
 ## Creation of Event-Triggers
 
 To register quantum applications to specific feeds, so called **EventTriggers** need to be created by sending POST-Requests to:
