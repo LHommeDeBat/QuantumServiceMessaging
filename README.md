@@ -47,10 +47,10 @@ dto example:
 
 script example:
 
+``` python
 from qiskit import IBMQ, transpile
 from qiskit.circuit.random import random_circuit
 
-``` python
 def main(params):
     provider = IBMQ.enable_account(params['apiToken'])
     backend = provider.get_backend(params['device'])
