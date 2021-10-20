@@ -21,7 +21,7 @@ All of the variables have default values besides the **apiToken: ${IBMQ_API_TOKE
 
 ## Supported Feeds
 
-- QueueSizeEvent-Feed: Retrieves queue sizes of all available quantum computers that are provided by IBM Quantum. Only input parameters submitted by the events are the **device** and **apiToken**.
+- QueueSizeEvent-Feed: Retrieves queue sizes of all available quantum computers that are provided by IBM Quantum. Only input parameters submitted by the events are the **device** and **apiToken**. The two parameters do not have to be provided during the creation of a quantum application, they will be automatically used for invoking the registered quantum applications.
 - ExecutionResultEvent-Feed: Retrieves results of completed quantum application executions. Events from this feed provide **device**, **apiToken** and **result**. The **result** parameter will be passed as a JSON-String and it needs to be provided during quantum application creation (with a default value) if the said quantum application wants to register to a ExecutionResultEvent-Feed.
 
 ## Creation of Quantum Applications
