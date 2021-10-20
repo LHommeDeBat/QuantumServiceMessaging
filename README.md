@@ -19,6 +19,16 @@ Make sure that your local machine where you run the application has **java** and
 To configure the application to your will, please check the necessary environment variables in **application.yml** and **application-local.yml**.
 All of the variables have default values besides the **apiToken: ${IBMQ_API_TOKEN}** within the **application.yml**. This variable needs to be passed to the application or simply overwritten by the actual value of your IBM Quantum API-Token.
 
+To use the service after it has started the swagger-ui can be used by opening:
+
+{{QUANTUM_SERVICE_MSG_HOST}}/swagger-ui/
+
+(example: http://localhost:9005/swagger-ui/)
+
+in the browser.
+
+Alternatively a Frontend-UI called [QuanatumServiceUI](https://github.com/LHommeDeBat/QuantumServiceUI) can be used.
+
 ## Supported Feeds
 
 - QueueSizeEvent-Feed: Retrieves queue sizes of all available quantum computers that are provided by IBM Quantum. Only input parameters submitted by the events are the **device** and **apiToken**. The two parameters do not have to be provided during the creation of a quantum application, they will be automatically used for invoking the registered quantum applications.
@@ -26,7 +36,13 @@ All of the variables have default values besides the **apiToken: ${IBMQ_API_TOKE
 
 ## Creation of Quantum Applications
 
-During the creation of quantum applications a Multipart-POST-Request is sent with the folling parts:
+During the creation of quantum applications a Multipart-POST-Request is sent to:
+
+{{QUANTUM_SERVICE_MSG_HOST}}/quantum-applications
+
+(example: http//localhost:9005/quantum-applications)
+
+with parts:
 
 - script: Your python file containing the qiskit code that is written as a function (function must be called **main**, it only has to have one single input parameter and the return must contain a single object with the field **jobId** that returns the Job-ID of the created Job)
 - dto: Other metadata of the quantum application formatted as a json string
@@ -63,3 +79,48 @@ def main(params):
         "jobId": job.job_id()
     }
 ```
+
+## Creation of Event-Triggers
+
+To register quantum applications to specific feeds, so called **EventTriggers** need to be created by sending POST-Requests to:
+
+{{QUANTUM_SERVICE_MSG_HOST}}/event-triggers
+
+(example: http//localhost:9005/event-triggers)
+
+with request-body:
+
+``` json
+{
+   "name":"TestQueueSizeTrigger",
+   "eventType":"QUEUE_SIZE",
+   "queueSize":55555
+}
+```
+
+as an exaple for a QueueSizeEventTrigger or:
+
+``` json
+{
+   "name":"TestExecutionResultEventTrigger",
+   "eventType":"EXECUTION_RESULT",
+   "executedApplication":{
+      "id":"1c4c818b-1815-4212-afa5-508aa1dd56d8",
+      "name":"TestResult",
+      ...
+      }
+   }
+}
+```
+as an example for a ExecutionResultEventTrigger
+
+## Register QuantumApplications to Events
+
+To register a quantum application to an event, it needs to be linked with a event trigger.
+For that a POST-Request needs to be sent to:
+
+{{QUANTUM_SERVICE_MSG_HOST}}/event-triggers/{{TRIGGER_NAME}}/quantum-applications/{{QUANTUM_APPLICATION_NAME}}
+
+(example: http//localhost:9005/event-triggers/MyTrigger/quantum-applications/MyQuantumApplication)
+
+To deregister a quantum application from a event-feed, simply perform a DELETE-Request to the same URL.
