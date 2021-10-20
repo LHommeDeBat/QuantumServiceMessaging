@@ -11,8 +11,7 @@ Before starting the application, rename the **docker-compose-template.yml** to *
 
 To start the needed database and MQ-Server perform **docker-compose up -d** in root folder of the project. This should start the container **quantumservicefilesystemdb** at port 9025 and **quantumservicefilesystemmq** at port 1414
 
-Then either use your IDE like IntelliJ to start the spring boot application or build it with **mvn clean install -DskipTests** in your root folder.
-Then go to your target folder and run the app by typing **java -jar QuantumService-0.0.1-SNAPSHOT.jar**
+Then use your IDE like IntelliJ to start the spring boot application.
 Please not that the application needs a python runtime with installed qiskit to run all registered quantum applications.
 Make sure that your local machine where you run the application has **java** and **python + qiskit** installed.
 
