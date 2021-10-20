@@ -16,7 +16,7 @@ Please not that the application needs a python runtime with installed qiskit to 
 Make sure that your local machine where you run the application has **java** and **python + qiskit** installed.
 
 To configure the application to your will, please check the necessary environment variables in **application.yml** and **application-local.yml**.
-All of the variables have default values besides the **apiToken: ${IBMQ_API_TOKEN}** within the **application.yml**. This variable needs to be passed to the application or simply overwritten by the actual value of your IBM Quantum API-Token.
+All of the variables have default values besides the **apiToken: ${IBMQ_API_TOKEN}** within the **application.yml**. This variable needs to be passed to the application or simply be overwritten by the actual value of your IBM Quantum API-Token.
 
 To use the service after it has started the swagger-ui can be used by opening:
 
