@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class IBMQEventPayload {
     private EventType eventType;
     private String device;
-    private String replyTo;
     private Map<String, Object> additionalProperties = new HashMap<>();
 
     public void addAdditionalProperty(String key, Object value) {

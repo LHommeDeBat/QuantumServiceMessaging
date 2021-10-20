@@ -71,7 +71,6 @@ public class ScriptExecutionService {
         Job job = new Job();
         // Add default values to Job
         job.setDevice(eventPayload.getDevice());
-        job.setReplyTo(eventPayload.getReplyTo());
         job.setScriptExecutionDate(scriptExecutionDate);
         job.setQuantumApplication(application);
         job.setUsedParameters(usedParameters);
