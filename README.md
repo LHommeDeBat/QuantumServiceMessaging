@@ -3,9 +3,11 @@
 This alternative version of the [QuantumService](https://github.com/LHommeDeBat/QuantumServiceFaas) relies on a filesystem and the usage of the Python-CLI instead of using FaaS for deploying and executing python scripts written with qiskit.
 
 When a quantum application is submitted, the service uses the submitted code of the application to write a file to disk.
-For execution, it uses the CLI outside of the running service to execute the python files (the machine requires an additional python runtime with qiskit installed).
+For execution, it uses the Python-CLI from inside the service to execute the python files (the machine requires an additional python runtime with qiskit installed).
 
 ## How to use
+
+Before starting the application, rename the **docker-compose-template.yml** to **docker-compose-yml** and replace missing variables marked with **!...!**. In this case, it is only the volume for the mysql-database.
 
 To start the needed database and MQ-Server perform **docker-compose up -d** in root folder of the project. This should start the container **quantumservicefilesystemdb** at port 9025 and **quantumservicefilesystemmq** at port 1414
 
@@ -16,3 +18,48 @@ Make sure that your local machine where you run the application has **java** and
 
 To configure the application to your will, please check the necessary environment variables in **application.yml** and **application-local.yml**.
 All of the variables have default values besides the **apiToken: ${IBMQ_API_TOKEN}** within the **application.yml**. This variable needs to be passed to the application or simply overwritten by the actual value of your IBM Quantum API-Token.
+
+## Supported Feeds
+
+- QueueSizeEvent-Feed: Retrieves queue sizes of all available quantum computers that are provided by IBM Quantum. Only input parameters submitted by the events are the **device** and **apiToken**.
+- ExecutionResultEvent-Feed: Retrieves results of completed quantum application executions. Events from this feed provide **device**, **apiToken** and **result**. The **result** parameter will be passed as a JSON-String and it needs to be provided during quantum application creation (with a default value) if the said quantum application wants to register to a ExecutionResultEvent-Feed.
+
+## Creation of Quantum Applications
+
+During the creation of quantum applications a Multipart-POST-Request is sent with the folling parts:
+
+- script: Your python file containing the qiskit code that is written as a function (function must be called **main**, it only has to have one single input parameter and the return must contain a single object with the field **jobId** that returns the Job-ID of the created Job)
+- dto: Other metadata of the quantum application formatted as a json string
+
+dto example:
+
+``` json
+{
+   "name":"TestResultJson",
+   "parameters":{
+      "result":{
+         "type":"STRING",
+         "defaultValue":"{}"
+      }
+   }
+}
+```
+
+script example:
+
+from qiskit import IBMQ, transpile
+from qiskit.circuit.random import random_circuit
+
+``` python
+def main(params):
+    provider = IBMQ.enable_account(params['apiToken'])
+    backend = provider.get_backend(params['device'])
+
+    qx = random_circuit(num_qubits=5, depth=4)
+    transpiled = transpile(qx, backend=backend)
+    job = backend.run(transpiled)
+    
+    return {
+        "jobId": job.job_id()
+    }
+```
