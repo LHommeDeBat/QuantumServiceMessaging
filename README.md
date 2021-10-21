@@ -108,7 +108,7 @@ as an exaple for a QueueSizeEventTrigger or:
    "executedApplication":{
       "id":"1c4c818b-1815-4212-afa5-508aa1dd56d8",
       "name":"TestResult",
-      ...
+      "...": "..."
       }
    }
 }
