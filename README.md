@@ -109,7 +109,6 @@ as an exaple for a QueueSizeEventTrigger or:
       "id":"1c4c818b-1815-4212-afa5-508aa1dd56d8",
       "name":"TestResult",
       "...": "..."
-      }
    }
 }
 ```
