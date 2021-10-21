@@ -55,7 +55,11 @@ dto example:
       "result":{
          "type":"STRING",
          "defaultValue":"{}"
-      }
+      },
+      "otherParameter": {
+         "type":"...",
+         "defaultValue":"..."
+      }   
    }
 }
 ```
